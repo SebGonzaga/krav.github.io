@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Krāv Cafe Tanauan | Satisfy Your Cravings</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header>
+  <nav>
+    <div class="logo" id="logo">
+  <span class="krav">KRĀV</span> 
+  <span class="cafe">Café</span>
+</div>
+    
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#menu">Menu</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#locate">Locate</a>
+      <a href="#contact">Contact</a>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:16px;">
+      <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button id="cartBtn" class="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cartCount" class="cart-count">0</span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Krāv Cafe Tanauan</h1>
+      <p>Industrial soul.<br>Cozy heart.<br>Premium cravings satisfied.</p>
+      <button class="btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">Explore Menu</button>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="about-container">
+      <div class="about-text">
+        <h2 class="section-title">Our Story</h2>
+        <p>Krāv Cafe Tanauan was born from a passion for quality coffee and warm community spaces in Brgy. Santor. We blend raw industrial aesthetics with cozy, welcoming vibes.</p>
+        <p>Every cup and dish is crafted with premium ingredients and love. Come for the coffee, stay for the connection.</p>
+        <div class="about-highlights">
+          <div><strong>Premium Sourcing</strong><br>Local beans, international standards.</div>
+          <div><strong>Cozy Workspace</strong><br>Fast Wi-Fi & industrial comfort.</div>
+        </div>
+      </div>
+      <div class="about-image">
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" alt="Krāv Cafe Interior" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <section id="menu">
+    <h2 class="section-title">Our Menu</h2>
+    <div class="menu-controls">
+      <input type="text" id="searchInput" placeholder="Search drinks & dishes..." onkeyup="filterMenu()">
+      <button class="filter-btn active" onclick="filterCategory('all', event)">All</button>
+      <button class="filter-btn" onclick="filterCategory('signature', event)">Signatures</button>
+      <button class="filter-btn" onclick="filterCategory('espresso', event)">Espresso</button>
+      <button class="filter-btn" onclick="filterCategory('noncoffee', event)">Non-Coffee</button>
+      <button class="filter-btn" onclick="filterCategory('kitchen', event)">Kitchen</button>
+    </div>
+    <div class="menu-grid" id="menuGrid"></div>
+  </section>
+
+  <section id="gallery">
+    <h2 class="section-title">The Krāv Vibe</h2>
+    <div class="gallery" id="galleryContainer"></div>
+  </section>
+
+  <section id="locate">
+    <h2 class="section-title">Visit Us</h2>
+    <div class="location-grid">
+      <div class="location-info">
+        <h3>Krāv Cafe Tanauan</h3>
+        <p>#057 Brgy. Santor, Tanauan City, Batangas</p>
+        <p><strong>Opening Hours</strong><br>
+          Mon–Thu: 10:00 AM – 10:00 PM<br>
+          Fri: 10:00 AM – 12:00 MN<br>
+          Sat: 7:00 AM – 12:00 MN<br>
+          Sun: 7:00 AM – 10:00 PM
+        </p>
+        <button class="btn" onclick="window.open('https://maps.google.com')">Get Directions</button>
+      </div>
+      <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3868.123456789!2d121.123456!3d14.123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTTCsDA3JzM0LjUiTiAxMjHCsDA3JzM0LjUiRQ!5e0!3m2!1sen!2sph!4v123456789" width="100%" height="420" style="border:0;border-radius:24px;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2 class="section-title">Contact Us</h2>
+    <div class="contact-grid">
+      <div class="contact-form">
+        <form id="contactForm">
+          <input type="text" placeholder="Your Name" required>
+          <input type="email" placeholder="Your Email" required>
+          <textarea placeholder="Your Message" rows="6" required></textarea>
+          <button type="submit" class="btn">Send Message</button>
+        </form>
+      </div>
+      <div class="contact-info">
+        <h3>Get in Touch</h3>
+        <p><i class="fas fa-map-marker-alt"></i> #057 Brgy. Santor, Tanauan City, Batangas</p>
+        <p><i class="fas fa-phone"></i> +63 917 123 4567</p>
+        <p><i class="fas fa-envelope"></i> hello@kravcafe.com</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Krāv Cafe Tanauan • Batangas, Philippines</p>
+  </footer>
+
+    <!-- AI Chatbot -->
+  <div class="chatbot" id="chatbot">
+    <div class="chat-header">
+      <span><i class="fas fa-robot"></i> Krāv AI</span>
+      <i class="fas fa-times" onclick="toggleChat()"></i>
+    </div>
+    <div class="chat-body" id="chatBody"></div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="What are you craving today? ☕" onkeypress="if(event.key==='Enter') sendMessage()">
+      <button onclick="sendMessage()">→</button>
+    </div>
+  </div>
+
+  <!-- Floating Chat Button - ONLY on Desktop -->
+  <button class="chat-float" onclick="toggleChat()" id="chatBtn">💬</button>
+
+  <!-- Mobile Bottom Navigation -->
+  <div class="bottom-nav">
+    <a href="#about"><i class="fas fa-info-circle"></i><span>About</span></a>
+    <a href="#menu"><i class="fas fa-coffee"></i><span>Menu</span></a>
+    <a href="#gallery"><i class="fas fa-images"></i><span>Vibe</span></a>
+    <a href="#locate"><i class="fas fa-map-marker-alt"></i><span>Locate</span></a>
+    <a onclick="toggleChat()"><i class="fas fa-robot"></i><span>AI</span></a>
+  </div>
+
+  <div class="modal" id="menuModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <img id="modalImage" alt="Menu Item">
+      <div class="modal-info">
+        <h2 id="modalName"></h2>
+        <p id="modalDesc"></p>
+        <div class="modal-price" id="modalPrice"></div>
+        <button class="btn" id="modalAddBtn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3>Your Cart (<span id="drawerCartCount">0</span>)</h3>
+      <i class="fas fa-times" onclick="toggleCart()" style="cursor:pointer"></i>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <strong>Total:</strong> <span id="cartTotal">₱0</span>
+      </div>
+      <button class="btn" style="width:100%" onclick="checkout()">Proceed to Checkout</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
