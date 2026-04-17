@@ -293,4 +293,49 @@ button[onclick^="nextPage"]:hover {
 .menu-card img {
     transition: transform 0.8s ease;
 }
+#map .grid {
+    gap: 4rem;
+}
+
+#map .flex {
+    align-items: flex-start;
+}
 /* Add more pages if needed with different z-index and slight rotation */
+/* Enhanced Mobile Navbar */
+.mobile-nav-link {
+    transition: all 0.3s ease;
+}
+
+.mobile-nav-link:hover {
+    padding-left: 16px;
+    color: #111;
+}
+
+.mobile-nav-link:active {
+    background-color: #f5f5f5;
+}
+
+/* Hamburger Animation */
+#hamburger-icon {
+    transition: transform 0.4s ease;
+}
+
+#mobile-menu-btn.active #hamburger-icon {
+    transform: rotate(90deg);
+}
+
+/* Mobile Menu Animation */
+#mobile-menu {
+    animation: slideDown 0.4s ease forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
