@@ -108,3 +108,54 @@ window.onload = () => {
         observer.observe(el);
     });
 };
+// Book Menu Variables
+let currentPage = 1;
+const totalPages = 5; // Change to 8 if you add more pages
+
+function showPage(page) {
+    document.querySelectorAll('.book-page').forEach(p => {
+        p.classList.remove('active');
+    });
+    
+    const activePage = document.getElementById(`page${page}`);
+    if (activePage) {
+        activePage.classList.add('active');
+    }
+    currentPage = page;
+}
+
+function nextPage() {
+    if (currentPage < totalPages) {
+        showPage(currentPage + 1);
+    }
+}
+
+function prevPage() {
+    if (currentPage > 1) {
+        showPage(currentPage - 1);
+    }
+}
+
+// Initialize book on load
+window.addEventListener('load', () => {
+    showPage(1);   // Start with first page
+});
+
+// Allow clicking on page to flip forward
+document.querySelectorAll('.book-page').forEach(page => {
+    page.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            nextPage();
+        }
+    });
+});
+// Smooth horizontal scroll for menu
+function scrollMenuLeft() {
+    const container = document.getElementById('menu-scroll');
+    container.scrollBy({ left: -400, behavior: 'smooth' });
+}
+
+function scrollMenuRight() {
+    const container = document.getElementById('menu-scroll');
+    container.scrollBy({ left: 400, behavior: 'smooth' });
+}

@@ -14,7 +14,7 @@
 <body class="font-sans bg-white text-black">
 
     <!-- NAVBAR -->
-    <nav class="bg-white border-b border-black sticky top-0 z-50 shadow-sm">
+    <nav id="navbar" class="bg-white border-b border-black sticky top-0 z-50 shadow-sm transition-all duration-300">
         <div class="max-w-screen-2xl mx-auto px-6 py-5 flex items-center justify-between">
             <a href="#" class="flex items-center gap-x-3">
                 <img src="YOUR-LOGO.png" alt="Krav Cafe Tanauan Logo" class="h-12 w-auto">
@@ -34,17 +34,6 @@
                 </svg>
             </button>
         </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-black px-6 py-10">
-            <div class="flex flex-col gap-y-6 text-center text-xl font-medium">
-                <a href="#home" onclick="toggleMobileMenu()" class="py-4 border-b">Home</a>
-                <a href="#menu" onclick="toggleMobileMenu()" class="py-4 border-b">Menu</a>
-                <a href="#gallery" onclick="toggleMobileMenu()" class="py-4 border-b">Gallery</a>
-                <a href="#map" onclick="toggleMobileMenu()" class="py-4 border-b">Location</a>
-                <a href="#contact" onclick="toggleMobileMenu()" class="py-4 border-b">Contact</a>
-            </div>
-        </div>
     </nav>
 
     <!-- HERO -->
@@ -52,66 +41,146 @@
         <div class="max-w-screen-2xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
             <div class="animate-fade-in">
                 <h1 class="text-6xl md:text-7xl font-bold leading-none tracking-tighter mb-6">Black &amp; White.<br>Pure Coffee.</h1>
-                <p class="text-2xl text-white/80 max-w-md">Minimalist café in Tanauan. Honest brews in a calm, clean space.</p>
-                <a href="#menu" class="mt-12 inline-block px-10 py-6 bg-white text-black font-semibold rounded-3xl text-lg hover:scale-105">Explore Our Menu</a>
+                <p class="text-2xl text-white/80 max-w-md">Minimalist café in Tanauan.</p>
+                <a href="#menu" class="mt-12 inline-block px-10 py-6 bg-white text-black font-semibold rounded-3xl text-lg hover:scale-105 transition-transform">View Our Menu</a>
             </div>
-            <div class="hidden md:flex justify-end animate-fade-in" style="animation-delay: 0.3s">
-                <img src="YOUR-LOGO.png" alt="Krav Cafe Tanauan" class="h-80 w-auto opacity-90 drop-shadow-2xl">
+            <div class="hidden md:flex justify-end">
+                <img src="YOUR-LOGO.png" alt="Krav Cafe Tanauan" class="hero-logo h-80 w-auto opacity-90 drop-shadow-2xl">
             </div>
         </div>
     </section>
 
-    <!-- MENU -->
-    <section id="menu" class="py-24 bg-black text-white">
-        <div class="max-w-screen-2xl mx-auto px-6">
-            <div class="text-center mb-16 animate-fade-in">
-                <h2 class="text-6xl font-bold">Our Menu</h2>
+    <!-- FLIPPING BOOK MENU -->
+    <!-- HORIZONTAL SCROLLING MENU -->
+<section id="menu" class="py-24 bg-white overflow-hidden">
+    <div class="max-w-screen-2xl mx-auto px-6">
+        <div class="flex justify-between items-end mb-12">
+            <div>
+                <h2 class="text-6xl font-bold animate-fade-in">Our Menu</h2>
+                <p class="text-black/60 mt-3 text-lg">Scroll horizontally to view all pages</p>
             </div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="menu-card bg-white text-black p-10 rounded-3xl animate-fade-in">
-                    <h3 class="text-4xl font-bold mb-8">Espresso</h3>
-                    <ul class="space-y-6 text-lg">
-                        <li class="flex justify-between"><span>Single Shot</span><span>₱135</span></li>
-                        <li class="flex justify-between"><span>Double Shot</span><span>₱165</span></li>
-                        <li class="flex justify-between"><span>Americano</span><span>₱155</span></li>
-                    </ul>
-                </div>
-                <div class="menu-card bg-white text-black p-10 rounded-3xl animate-fade-in" style="animation-delay: 0.1s">
-                    <h3 class="text-4xl font-bold mb-8">Pour Over</h3>
-                    <ul class="space-y-6 text-lg">
-                        <li class="flex justify-between"><span>Ethiopia Yirgacheffe</span><span>₱195</span></li>
-                        <li class="flex justify-between"><span>Benguet Arabica</span><span>₱185</span></li>
-                    </ul>
-                </div>
-                <div class="menu-card bg-white text-black p-10 rounded-3xl animate-fade-in" style="animation-delay: 0.2s">
-                    <h3 class="text-4xl font-bold mb-8">Favorites</h3>
-                    <ul class="space-y-6 text-lg">
-                        <li class="flex justify-between"><span>Oat Milk Latte</span><span>₱175</span></li>
-                        <li class="flex justify-between"><span>Avocado Toast</span><span>₱185</span></li>
-                    </ul>
-                </div>
+            <div class="hidden md:flex gap-4">
+                <button onclick="scrollMenuLeft()" 
+                        class="w-12 h-12 border-2 border-black rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all text-2xl">
+                    ←
+                </button>
+                <button onclick="scrollMenuRight()" 
+                        class="w-12 h-12 border-2 border-black rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all text-2xl">
+                    →
+                </button>
             </div>
         </div>
-    </section>
+
+        <!-- Horizontal Scroll Container -->
+        <div id="menu-scroll" 
+             class="flex gap-8 overflow-x-auto pb-12 snap-x snap-mandatory scrollbar-hide scroll-smooth">
+            
+            <!-- Menu Page 1 -->
+            <div class="min-w-[85%] md:min-w-[45%] lg:min-w-[32%] snap-start">
+                <div class="menu-card overflow-hidden rounded-3xl shadow-xl">
+                    <img src="https://picsum.photos/id/1015/800/1100" 
+                         alt="Menu Page 1" 
+                         class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700">
+                </div>
+            </div>
+
+            <!-- Menu Page 2 -->
+            <div class="min-w-[85%] md:min-w-[45%] lg:min-w-[32%] snap-start">
+                <div class="menu-card overflow-hidden rounded-3xl shadow-xl">
+                    <img src="https://picsum.photos/id/201/800/1100" 
+                         alt="Menu Page 2" 
+                         class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700">
+                </div>
+            </div>
+
+            <!-- Menu Page 3 -->
+            <div class="min-w-[85%] md:min-w-[45%] lg:min-w-[32%] snap-start">
+                <div class="menu-card overflow-hidden rounded-3xl shadow-xl">
+                    <img src="https://picsum.photos/id/1005/800/1100" 
+                         alt="Menu Page 3" 
+                         class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700">
+                </div>
+            </div>
+
+            <!-- Menu Page 4 -->
+            <div class="min-w-[85%] md:min-w-[45%] lg:min-w-[32%] snap-start">
+                <div class="menu-card overflow-hidden rounded-3xl shadow-xl">
+                    <img src="https://picsum.photos/id/133/800/1100" 
+                         alt="Menu Page 4" 
+                         class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700">
+                </div>
+            </div>
+
+            <!-- Menu Page 5 -->
+            <div class="min-w-[85%] md:min-w-[45%] lg:min-w-[32%] snap-start">
+                <div class="menu-card overflow-hidden rounded-3xl shadow-xl">
+                    <img src="https://picsum.photos/id/870/800/1100" 
+                         alt="Menu Page 5" 
+                         class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700">
+                </div>
+            </div>
+
+            <!-- Menu Page 6 -->
+            <div class="min-w-[85%] md:min-w-[45%] lg:min-w-[32%] snap-start">
+                <div class="menu-card overflow-hidden rounded-3xl shadow-xl">
+                    <img src="https://picsum.photos/id/1016/800/1100" 
+                         alt="Menu Page 6" 
+                         class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700">
+                </div>
+            </div>
+
+            <!-- Menu Page 7 -->
+            <div class="min-w-[85%] md:min-w-[45%] lg:min-w-[32%] snap-start">
+                <div class="menu-card overflow-hidden rounded-3xl shadow-xl">
+                    <img src="https://picsum.photos/id/106/800/1100" 
+                         alt="Menu Page 7" 
+                         class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700">
+                </div>
+            </div>
+
+            <!-- Menu Page 8 -->
+            <div class="min-w-[85%] md:min-w-[45%] lg:min-w-[32%] snap-start">
+                <div class="menu-card overflow-hidden rounded-3xl shadow-xl">
+                    <img src="https://picsum.photos/id/201/800/1100" 
+                         alt="Menu Page 8" 
+                         class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
 
     <!-- GALLERY -->
     <section id="gallery" class="py-24">
         <div class="max-w-screen-2xl mx-auto px-6">
-            <div class="text-center mb-16 animate-fade-in">
-                <h2 class="text-6xl font-bold">Gallery</h2>
+            <div class="text-center mb-16">
+                <h2 class="text-6xl font-bold animate-fade-in">Gallery</h2>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <div onclick="showImageModal(1)" class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer animate-fade-in">
+                <div onclick="showImageModal(1)" class="gallery-item group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
                     <img src="https://picsum.photos/id/1015/800/800" alt="" class="gallery-img">
+                    <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 flex items-end p-6">
+                        <p class="text-white text-lg">Cozy corner</p>
+                    </div>
                 </div>
-                <div onclick="showImageModal(2)" class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer animate-fade-in" style="animation-delay: 0.1s">
+                <div onclick="showImageModal(2)" class="gallery-item group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
                     <img src="https://picsum.photos/id/201/800/800" alt="" class="gallery-img">
+                    <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 flex items-end p-6">
+                        <p class="text-white text-lg">Perfect pour</p>
+                    </div>
                 </div>
-                <div onclick="showImageModal(3)" class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer animate-fade-in" style="animation-delay: 0.2s">
+                <div onclick="showImageModal(3)" class="gallery-item group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
                     <img src="https://picsum.photos/id/1005/800/800" alt="" class="gallery-img">
+                    <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 flex items-end p-6">
+                        <p class="text-white text-lg">Minimal seating</p>
+                    </div>
                 </div>
-                <div onclick="showImageModal(4)" class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer animate-fade-in" style="animation-delay: 0.3s">
+                <div onclick="showImageModal(4)" class="gallery-item group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
                     <img src="https://picsum.photos/id/133/800/800" alt="" class="gallery-img">
+                    <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 flex items-end p-6">
+                        <p class="text-white text-lg">Fresh pastries</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -136,26 +205,26 @@
         </div>
     </section>
 
-    <!-- CONTACT - Socials Only -->
+    <!-- CONTACT -->
     <section id="contact" class="py-24 bg-white">
         <div class="max-w-screen-2xl mx-auto px-6 text-center">
             <h2 class="text-6xl font-bold mb-12 animate-fade-in">Follow Us</h2>
             <div class="flex justify-center gap-20">
                 <a href="https://facebook.com/kravcafetanauan" target="_blank" class="social-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                 </a>
                 <a href="https://instagram.com/kravcafetanauan" target="_blank" class="social-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                 </a>
                 <a href="https://tiktok.com/@kravcafetanauan" target="_blank" class="social-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4"></path><path d="M4.93 4.93l2.83 2.83"></path><path d="M16.24 16.24l2.83 2.83"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19V6l12-3v13"></path><circle cx="6" cy="19" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
                 </a>
             </div>
             <p class="mt-10 text-xl text-black/70">@kravcafetanauan</p>
         </div>
     </section>
 
-    <!-- FOOTER - Clean, no social icons -->
+    <!-- FOOTER -->
     <footer class="bg-black text-white py-20">
         <div class="max-w-screen-2xl mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
