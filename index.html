@@ -1,187 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Krāv Cafe Tanauan | Satisfy Your Cravings</title>
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-
-  <header>
-  <nav>
-    <div class="logo" id="logo">
-  <span class="krav">KRĀV</span> 
-  <span class="cafe">Café</span>
-</div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krav Cafe Tanauan</title>
     
-    <div class="nav-links">
-      <a href="#about">About</a>
-      <a href="#menu">Menu</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#locate">Locate</a>
-      <a href="#contact">Contact</a>
-    </div>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="font-sans bg-white text-black">
 
-    <div style="display:flex; align-items:center; gap:16px;">
-      <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
-        <i class="fas fa-moon"></i>
-      </button>
-      <button id="cartBtn" class="cart-icon">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="cartCount" class="cart-count">0</span>
-      </button>
-    </div>
-  </nav>
-</header>
+    <!-- NAVBAR -->
+    <nav class="bg-white border-b border-black sticky top-0 z-50 shadow-sm">
+        <div class="max-w-screen-2xl mx-auto px-6 py-5 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-x-3">
+                <img src="YOUR-LOGO.png" alt="Krav Cafe Tanauan Logo" class="h-12 w-auto">
+            </a>
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Krāv Cafe Tanauan</h1>
-      <p>Industrial soul.<br>Cozy heart.<br>Premium cravings satisfied.</p>
-      <button class="btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">Explore Menu</button>
-    </div>
-  </section>
+            <div class="hidden md:flex items-center gap-x-10 text-sm font-medium uppercase tracking-widest">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#menu" class="nav-link">Menu</a>
+                <a href="#gallery" class="nav-link">Gallery</a>
+                <a href="#map" class="nav-link">Location</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
 
-  <section id="about">
-    <div class="about-container">
-      <div class="about-text">
-        <h2 class="section-title">Our Story</h2>
-        <p>Krāv Cafe Tanauan was born from a passion for quality coffee and warm community spaces in Brgy. Santor. We blend raw industrial aesthetics with cozy, welcoming vibes.</p>
-        <p>Every cup and dish is crafted with premium ingredients and love. Come for the coffee, stay for the connection.</p>
-        <div class="about-highlights">
-          <div><strong>Premium Sourcing</strong><br>Local beans, international standards.</div>
-          <div><strong>Cozy Workspace</strong><br>Fast Wi-Fi & industrial comfort.</div>
+            <button onclick="toggleMobileMenu()" class="md:hidden w-12 h-12 flex items-center justify-center border-2 border-black rounded-3xl hover:bg-black hover:text-white">
+                <svg id="hamburger-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
         </div>
-      </div>
-      <div class="about-image">
-        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" alt="Krāv Cafe Interior" loading="lazy">
-      </div>
-    </div>
-  </section>
 
-  <section id="menu">
-    <h2 class="section-title">Our Menu</h2>
-    <div class="menu-controls">
-      <input type="text" id="searchInput" placeholder="Search drinks & dishes..." onkeyup="filterMenu()">
-      <button class="filter-btn active" onclick="filterCategory('all', event)">All</button>
-      <button class="filter-btn" onclick="filterCategory('signature', event)">Signatures</button>
-      <button class="filter-btn" onclick="filterCategory('espresso', event)">Espresso</button>
-      <button class="filter-btn" onclick="filterCategory('noncoffee', event)">Non-Coffee</button>
-      <button class="filter-btn" onclick="filterCategory('kitchen', event)">Kitchen</button>
-    </div>
-    <div class="menu-grid" id="menuGrid"></div>
-  </section>
-
-  <section id="gallery">
-    <h2 class="section-title">The Krāv Vibe</h2>
-    <div class="gallery" id="galleryContainer"></div>
-  </section>
-
-  <section id="locate">
-    <h2 class="section-title">Visit Us</h2>
-    <div class="location-grid">
-      <div class="location-info">
-        <h3>Krāv Cafe Tanauan</h3>
-        <p>#057 Brgy. Santor, Tanauan City, Batangas</p>
-        <p><strong>Opening Hours</strong><br>
-          Mon–Thu: 10:00 AM – 10:00 PM<br>
-          Fri: 10:00 AM – 12:00 MN<br>
-          Sat: 7:00 AM – 12:00 MN<br>
-          Sun: 7:00 AM – 10:00 PM
-        </p>
-        <button class="btn" onclick="window.open('https://maps.google.com')">Get Directions</button>
-      </div>
-      <div class="map-container">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3868.123456789!2d121.123456!3d14.123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTTCsDA3JzM0LjUiTiAxMjHCsDA3JzM0LjUiRQ!5e0!3m2!1sen!2sph!4v123456789" width="100%" height="420" style="border:0;border-radius:24px;" allowfullscreen="" loading="lazy"></iframe>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <h2 class="section-title">Contact Us</h2>
-    <div class="contact-grid">
-      <div class="contact-form">
-        <form id="contactForm">
-          <input type="text" placeholder="Your Name" required>
-          <input type="email" placeholder="Your Email" required>
-          <textarea placeholder="Your Message" rows="6" required></textarea>
-          <button type="submit" class="btn">Send Message</button>
-        </form>
-      </div>
-      <div class="contact-info">
-        <h3>Get in Touch</h3>
-        <p><i class="fas fa-map-marker-alt"></i> #057 Brgy. Santor, Tanauan City, Batangas</p>
-        <p><i class="fas fa-phone"></i> +63 917 123 4567</p>
-        <p><i class="fas fa-envelope"></i> hello@kravcafe.com</p>
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-facebook"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-black px-6 py-10">
+            <div class="flex flex-col gap-y-6 text-center text-xl font-medium">
+                <a href="#home" onclick="toggleMobileMenu()" class="py-4 border-b">Home</a>
+                <a href="#menu" onclick="toggleMobileMenu()" class="py-4 border-b">Menu</a>
+                <a href="#gallery" onclick="toggleMobileMenu()" class="py-4 border-b">Gallery</a>
+                <a href="#map" onclick="toggleMobileMenu()" class="py-4 border-b">Location</a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="py-4 border-b">Contact</a>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </nav>
 
-  <footer>
-    <p>© 2026 Krāv Cafe Tanauan • Batangas, Philippines</p>
-  </footer>
+    <!-- HERO -->
+    <section id="home" class="hero-bg text-white min-h-screen flex items-center relative overflow-hidden">
+        <div class="max-w-screen-2xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div class="animate-fade-in">
+                <h1 class="text-6xl md:text-7xl font-bold leading-none tracking-tighter mb-6">Black &amp; White.<br>Pure Coffee.</h1>
+                <p class="text-2xl text-white/80 max-w-md">Minimalist café in Tanauan. Honest brews in a calm, clean space.</p>
+                <a href="#menu" class="mt-12 inline-block px-10 py-6 bg-white text-black font-semibold rounded-3xl text-lg hover:scale-105">Explore Our Menu</a>
+            </div>
+            <div class="hidden md:flex justify-end animate-fade-in" style="animation-delay: 0.3s">
+                <img src="YOUR-LOGO.png" alt="Krav Cafe Tanauan" class="h-80 w-auto opacity-90 drop-shadow-2xl">
+            </div>
+        </div>
+    </section>
+
+    <!-- MENU -->
+    <section id="menu" class="py-24 bg-black text-white">
+        <div class="max-w-screen-2xl mx-auto px-6">
+            <div class="text-center mb-16 animate-fade-in">
+                <h2 class="text-6xl font-bold">Our Menu</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="menu-card bg-white text-black p-10 rounded-3xl animate-fade-in">
+                    <h3 class="text-4xl font-bold mb-8">Espresso</h3>
+                    <ul class="space-y-6 text-lg">
+                        <li class="flex justify-between"><span>Single Shot</span><span>₱135</span></li>
+                        <li class="flex justify-between"><span>Double Shot</span><span>₱165</span></li>
+                        <li class="flex justify-between"><span>Americano</span><span>₱155</span></li>
+                    </ul>
+                </div>
+                <div class="menu-card bg-white text-black p-10 rounded-3xl animate-fade-in" style="animation-delay: 0.1s">
+                    <h3 class="text-4xl font-bold mb-8">Pour Over</h3>
+                    <ul class="space-y-6 text-lg">
+                        <li class="flex justify-between"><span>Ethiopia Yirgacheffe</span><span>₱195</span></li>
+                        <li class="flex justify-between"><span>Benguet Arabica</span><span>₱185</span></li>
+                    </ul>
+                </div>
+                <div class="menu-card bg-white text-black p-10 rounded-3xl animate-fade-in" style="animation-delay: 0.2s">
+                    <h3 class="text-4xl font-bold mb-8">Favorites</h3>
+                    <ul class="space-y-6 text-lg">
+                        <li class="flex justify-between"><span>Oat Milk Latte</span><span>₱175</span></li>
+                        <li class="flex justify-between"><span>Avocado Toast</span><span>₱185</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" class="py-24">
+        <div class="max-w-screen-2xl mx-auto px-6">
+            <div class="text-center mb-16 animate-fade-in">
+                <h2 class="text-6xl font-bold">Gallery</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div onclick="showImageModal(1)" class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer animate-fade-in">
+                    <img src="https://picsum.photos/id/1015/800/800" alt="" class="gallery-img">
+                </div>
+                <div onclick="showImageModal(2)" class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer animate-fade-in" style="animation-delay: 0.1s">
+                    <img src="https://picsum.photos/id/201/800/800" alt="" class="gallery-img">
+                </div>
+                <div onclick="showImageModal(3)" class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer animate-fade-in" style="animation-delay: 0.2s">
+                    <img src="https://picsum.photos/id/1005/800/800" alt="" class="gallery-img">
+                </div>
+                <div onclick="showImageModal(4)" class="group relative overflow-hidden rounded-3xl aspect-square cursor-pointer animate-fade-in" style="animation-delay: 0.3s">
+                    <img src="https://picsum.photos/id/133/800/800" alt="" class="gallery-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAP -->
+    <section id="map" class="py-24 bg-black text-white relative z-10">
+        <div class="max-w-screen-2xl mx-auto px-6">
+            <div class="grid md:grid-cols-12 gap-16 items-center">
+                <div class="md:col-span-5 animate-fade-in">
+                    <h2 class="text-6xl font-bold mb-8">Visit Us</h2>
+                    <p class="text-2xl">123 Mabini Avenue,<br>Tanauan City, Batangas</p>
+                    <div class="mt-10 space-y-4 text-lg">
+                        <p><strong>Daily Hours:</strong> 7:00 AM – 10:00 PM</p>
+                        <p><strong>Phone:</strong> 0917 123 4567</p>
+                    </div>
+                </div>
+                <div class="md:col-span-7">
+                    <div id="map-container" class="h-96 md:h-[520px] rounded-3xl overflow-hidden shadow-2xl"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT - Socials Only -->
+    <section id="contact" class="py-24 bg-white">
+        <div class="max-w-screen-2xl mx-auto px-6 text-center">
+            <h2 class="text-6xl font-bold mb-12 animate-fade-in">Follow Us</h2>
+            <div class="flex justify-center gap-20">
+                <a href="https://facebook.com/kravcafetanauan" target="_blank" class="social-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+                <a href="https://instagram.com/kravcafetanauan" target="_blank" class="social-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                <a href="https://tiktok.com/@kravcafetanauan" target="_blank" class="social-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4"></path><path d="M4.93 4.93l2.83 2.83"></path><path d="M16.24 16.24l2.83 2.83"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                </a>
+            </div>
+            <p class="mt-10 text-xl text-black/70">@kravcafetanauan</p>
+        </div>
+    </section>
+
+    <!-- FOOTER - Clean, no social icons -->
+    <footer class="bg-black text-white py-20">
+        <div class="max-w-screen-2xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="flex items-center gap-x-3">
+                    <img src="YOUR-LOGO.png" alt="Krav Cafe Tanauan" class="h-12 w-auto">
+                </div>
+                <p class="text-white/60 text-center md:text-right">
+                    © 2026 Krav Cafe Tanauan<br>
+                    Tanauan City, Batangas, Philippines
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="hidden fixed inset-0 bg-black/90 z-[10000] flex items-center justify-center p-6">
+        <div class="max-w-3xl w-full relative">
+            <button onclick="hideImageModal()" class="absolute -top-12 right-4 text-white text-6xl">×</button>
+            <img id="modal-image" src="" class="rounded-3xl w-full">
+            <p id="modal-caption" class="text-white text-center mt-6 text-xl"></p>
+        </div>
+    </div>
 
     <!-- AI Chatbot -->
-  <div class="chatbot" id="chatbot">
-    <div class="chat-header">
-      <span><i class="fas fa-robot"></i> Krāv AI</span>
-      <i class="fas fa-times" onclick="toggleChat()"></i>
+    <div onclick="toggleChat()" class="fixed bottom-8 right-8 bg-black text-white w-16 h-16 rounded-3xl flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 text-4xl z-[99999]">
+        🤖
     </div>
-    <div class="chat-body" id="chatBody"></div>
-    <div class="chat-input">
-      <input type="text" id="chatInput" placeholder="What are you craving today? ☕" onkeypress="if(event.key==='Enter') sendMessage()">
-      <button onclick="sendMessage()">→</button>
+
+    <div id="chat-window" class="hidden fixed bottom-28 right-8 w-96 bg-white border border-black rounded-3xl shadow-2xl flex flex-col h-[500px] z-[99999]">
+        <div class="bg-black text-white p-6 rounded-t-3xl flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">☕</span>
+                <div>
+                    <p class="font-semibold">Krav AI</p>
+                    <p class="text-xs text-white/60">Ask anything</p>
+                </div>
+            </div>
+            <button onclick="toggleChat()" class="text-4xl leading-none">×</button>
+        </div>
+        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-6 bg-zinc-50"></div>
+        <div class="p-4 border-t">
+            <div class="flex gap-3">
+                <input id="chat-input" onkeypress="if(event.key==='Enter') sendChatMessage()" 
+                       class="flex-1 border border-black rounded-3xl px-6 py-4 focus:outline-none" placeholder="Ask about menu or hours...">
+                <button onclick="sendChatMessage()" class="bg-black text-white w-14 h-14 rounded-3xl text-2xl">↑</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Floating Chat Button - ONLY on Desktop -->
-  <button class="chat-float" onclick="toggleChat()" id="chatBtn">💬</button>
-
-  <!-- Mobile Bottom Navigation -->
-  <div class="bottom-nav">
-    <a href="#about"><i class="fas fa-info-circle"></i><span>About</span></a>
-    <a href="#menu"><i class="fas fa-coffee"></i><span>Menu</span></a>
-    <a href="#gallery"><i class="fas fa-images"></i><span>Vibe</span></a>
-    <a href="#locate"><i class="fas fa-map-marker-alt"></i><span>Locate</span></a>
-    <a onclick="toggleChat()"><i class="fas fa-robot"></i><span>AI</span></a>
-  </div>
-
-  <div class="modal" id="menuModal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeModal()">✕</button>
-      <img id="modalImage" alt="Menu Item">
-      <div class="modal-info">
-        <h2 id="modalName"></h2>
-        <p id="modalDesc"></p>
-        <div class="modal-price" id="modalPrice"></div>
-        <button class="btn" id="modalAddBtn">Add to Cart</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="cart-drawer" id="cartDrawer">
-    <div class="cart-header">
-      <h3>Your Cart (<span id="drawerCartCount">0</span>)</h3>
-      <i class="fas fa-times" onclick="toggleCart()" style="cursor:pointer"></i>
-    </div>
-    <div class="cart-items" id="cartItems"></div>
-    <div class="cart-footer">
-      <div class="cart-total">
-        <strong>Total:</strong> <span id="cartTotal">₱0</span>
-      </div>
-      <button class="btn" style="width:100%" onclick="checkout()">Proceed to Checkout</button>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
