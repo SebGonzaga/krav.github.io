@@ -168,3 +168,68 @@ button[onclick="toggleChat()"]:hover {
     background: #888;
     border-radius: 20px;
 }
+/* ============== MOBILE ENHANCEMENTS ============== */
+
+/* Make chat window better on small screens */
+#chat-window {
+    max-height: 85vh;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+    #chat-window {
+        inset-x: 12px;
+        bottom: 90px;
+        height: 460px;
+        border-radius: 20px;
+    }
+    
+    #chat-messages {
+        padding: 16px;
+        font-size: 15px;
+    }
+    
+    #chat-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* Improve message bubbles on mobile */
+#chat-messages .flex {
+    gap: 12px;
+}
+
+#chat-messages .bg-white {
+    padding: 14px 18px;
+    border-radius: 20px;
+    border-top-left-radius: 4px;
+}
+
+#chat-messages .bg-black {
+    padding: 14px 18px;
+    border-radius: 20px;
+    border-top-right-radius: 4px;
+}
+
+/* Better floating button on mobile */
+.fixed.bottom-6.right-6 {
+    bottom: 20px;
+    right: 20px;
+}
+
+/* General mobile improvements */
+@media (max-width: 640px) {
+    h1 {
+        font-size: 2.75rem;
+        line-height: 1.05;
+    }
+    
+    .text-6xl {
+        font-size: 2.8rem;
+    }
+    
+    section {
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+    }
+}
