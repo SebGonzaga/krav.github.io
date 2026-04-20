@@ -12,22 +12,11 @@ h1, h2, h3, h4, h5, h6 {
     background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
 }
 
-/* Navbar scroll effect */
+/* Navbar */
 #navbar.scrolled {
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15);
 }
 
-/* Hero Logo Floating Animation */
-.hero-logo {
-    animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-25px); }
-}
-
-/* Navigation */
 .nav-link {
     position: relative;
 }
@@ -47,239 +36,17 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
 }
 
-/* Menu Cards */
-.menu-card {
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+/* Hero */
+.hero-logo {
+    animation: float 6s ease-in-out infinite;
 }
 
-.menu-card:hover {
-    transform: translateY(-15px) scale(1.03);
-    box-shadow: 30px 30px 0 -15px #111;
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-25px); }
 }
 
-/* Gallery */
-.gallery-item {
-    transition: all 0.4s ease;
-}
-
-.gallery-img {
-    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.gallery-item:hover .gallery-img {
-    transform: scale(1.12);
-}
-
-.gallery-overlay {
-    transition: opacity 0.5s ease;
-}
-
-/* Social Icons */
-.social-icon {
-    transition: transform 0.4s ease;
-}
-
-.social-icon:hover {
-    transform: scale(1.2) rotate(5deg);
-}
-
-/* Fade-in Animation */
-.animate-fade-in {
-    opacity: 0;
-    transform: translateY(50px);
-    animation: fadeInUp 0.9s forwards;
-}
-
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Chatbot */
-.chat-bubble {
-    animation: chatPop 0.4s ease;
-}
-
-@keyframes chatPop {
-    0% { transform: scale(0.6); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-/* Map */
-#map-container {
-    border-radius: 24px;
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-}
-
-/* Responsive */
-@media (max-width: 640px) {
-    h1 {
-        font-size: 2.8rem;
-    }
-}
-/* Book Menu Styles */
-.book-container {
-    perspective: 2500px;
-    height: 520px;
-}
-
-.book-page {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: white;
-    border: 2px solid #111;
-    border-radius: 12px;
-    box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.2);
-    backface-visibility: hidden;
-    transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
-    cursor: pointer;
-    overflow: hidden;
-}
-
-.book-page.active {
-    z-index: 10;
-    transform: rotateY(0deg);
-}
-
-.page-content {
-    padding: 50px 40px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Simple flip effect simulation */
-.book-page:hover {
-    box-shadow: 30px 30px 60px rgba(0, 0, 0, 0.25);
-}
-/* Flipping Book Menu */
-.flipbook {
-    perspective: 3000px;
-    position: relative;
-}
-
-.book-page {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: white;
-    border: 3px solid #111;
-    border-radius: 16px;
-    box-shadow: 25px 25px 60px rgba(0, 0, 0, 0.25);
-    transition: all 0.8s cubic-bezier(0.7, 0, 0.3, 1);
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.book-page:not(.active) {
-    opacity: 0;
-    pointer-events: none;
-    transform: rotateY(15deg) scale(0.95);
-}
-
-.book-page.active {
-    z-index: 10;
-    transform: rotateY(0deg) scale(1);
-    opacity: 1;
-}
-
-.page-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.page-image {
-    width: 100%;
-    height: 55%;
-    object-fit: cover;
-    border-bottom: 3px solid #111;
-}
-
-.page-text {
-    padding: 35px 40px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.page-text h3 {
-    font-family: 'Playfair Display', serif;
-}
-
-/* Arrow buttons */
-button[onclick^="prevPage"], button[onclick^="nextPage"] {
-    transition: all 0.3s ease;
-}
-
-button[onclick^="prevPage"]:hover, button[onclick^="nextPage"]:hover {
-    transform: scale(1.1);
-}
-/* Flipping Book Menu - Picture Only */
-.flipbook {
-    perspective: 3200px;
-}
-
-.book-page {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: white;
-    border: 4px solid #111111;
-    border-radius: 20px;
-    box-shadow: 30px 30px 80px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    transition: all 0.9s cubic-bezier(0.65, 0, 0.35, 1);
-    cursor: grab;
-}
-
-.book-page:not(.active) {
-    opacity: 0;
-    pointer-events: none;
-    transform: rotateY(12deg) scale(0.92);
-}
-
-.book-page.active {
-    z-index: 20;
-    transform: rotateY(0deg) scale(1);
-    opacity: 1;
-}
-
-.menu-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-/* Arrow buttons */
-button[onclick^="prevPage"], 
-button[onclick^="nextPage"] {
-    transition: all 0.3s ease;
-}
-
-button[onclick^="prevPage"]:hover, 
-button[onclick^="nextPage"]:hover {
-    transform: scale(1.15);
-}
-/* Horizontal Menu Scroll */
-#menu-scroll {
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-}
-
-#menu-scroll::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-}
-
+/* Menu */
 .menu-card {
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -289,19 +56,41 @@ button[onclick^="nextPage"]:hover {
     box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
 }
 
-/* Make images look better */
-.menu-card img {
-    transition: transform 0.8s ease;
-}
-#map .grid {
-    gap: 4rem;
+#menu-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-#map .flex {
-    align-items: flex-start;
+#menu-scroll::-webkit-scrollbar {
+    display: none;
 }
-/* Add more pages if needed with different z-index and slight rotation */
-/* Enhanced Mobile Navbar */
+
+/* Gallery */
+.gallery-item:hover .gallery-img {
+    transform: scale(1.12);
+}
+
+.gallery-overlay {
+    transition: opacity 0.5s ease;
+}
+
+/* Social */
+.social-icon:hover {
+    transform: scale(1.2) rotate(5deg);
+}
+
+/* Animations */
+.animate-fade-in {
+    opacity: 0;
+    transform: translateY(50px);
+    animation: fadeInUp 0.9s forwards;
+}
+
+@keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Menu */
 .mobile-nav-link {
     transition: all 0.3s ease;
 }
@@ -311,31 +100,17 @@ button[onclick^="nextPage"]:hover {
     color: #111;
 }
 
-.mobile-nav-link:active {
-    background-color: #f5f5f5;
+/* Responsive */
+@media (max-width: 640px) {
+    h1 { font-size: 2.8rem; }
+}
+/* Enhanced Hero Buttons */
+button[onclick="toggleChat()"] {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Hamburger Animation */
-#hamburger-icon {
-    transition: transform 0.4s ease;
-}
-
-#mobile-menu-btn.active #hamburger-icon {
-    transform: rotate(90deg);
-}
-
-/* Mobile Menu Animation */
-#mobile-menu {
-    animation: slideDown 0.4s ease forwards;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+button[onclick="toggleChat()"]:hover {
+    border-color: white;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.1);
 }
