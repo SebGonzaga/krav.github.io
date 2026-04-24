@@ -403,13 +403,16 @@ function initMap() {
     const el = document.getElementById('map-container');
     if (!el || typeof L === 'undefined') return;
 
-    const map = L.map(el).setView([14.0929, 121.1145], 17);
+    const kravCafe = [14.090506521880544, 121.12068331652362];
+
+    const map = L.map(el).setView(kravCafe, 19); // higher zoom for precision
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'
     }).addTo(map);
 
-    L.marker([14.0929, 121.1145]).addTo(map)
-        .bindPopup("🎉 KRĀV Cafe - Open Now!")
+    L.marker(kravCafe).addTo(map)
+        .bindPopup("🎉 KRĀV Cafe - Exact Spot")
         .openPopup();
 }
 
