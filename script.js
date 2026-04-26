@@ -1,6 +1,6 @@
 // ==================== CONFIGURATION ====================
-const OPENAI_API_KEY = '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'; // ⚠️ Replace this before going live
-
+import 'dotenv/config';
+const apiKey = process.env.OPENAI_API_KEY;
 const BARISTA_SYSTEM_PROMPT = `You are Krav, the friendly AI barista at KRĀV Cafe Tanauan — a cozy cafe located at 57 Brgy. Santor, Tanauan City, Batangas, Philippines.
 
 Your personality:
