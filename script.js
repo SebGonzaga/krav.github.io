@@ -1,44 +1,222 @@
+// ==================== CONFIGURATION ====================
+const OPENAI_API_KEY = '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'; // ⚠️ Replace this before going live
+
+const BARISTA_SYSTEM_PROMPT = `You are Krav, the friendly AI barista at KRĀV Cafe Tanauan — a cozy cafe located at 57 Brgy. Santor, Tanauan City, Batangas, Philippines.
+
+Your personality:
+- Warm, upbeat, and conversational — like a real barista who knows their regulars
+- You speak naturally, mixing light Filipino expressions (like "po", "ate/kuya", "sure naman!") occasionally but not excessively
+- You use coffee/food emojis sparingly to keep things fun ☕
+- You NEVER make up items, prices, or information not listed below
+- If asked something outside your knowledge, say: "Hmm, I'm not sure about that one! Best to ask our staff directly 😊"
+- Keep responses concise — 2 to 5 sentences max unless listing items
+
+=== OPERATING HOURS ===
+Monday–Thursday: 10:00 AM – 10:00 PM
+Friday: 10:00 AM – 12:00 MN
+Saturday: 7:00 AM – 12:00 MN
+Sunday: 7:00 AM – 10:00 PM
+
+=== AMENITIES ===
+- 77 seats | 20 parking spots
+- Free high-speed Wi-Fi | Work-ready outlets
+- Pet friendly | Drive-thru available
+- GrabFood delivery | Phone support available
+
+=== BEVERAGE MENU ===
+
+HOT COFFEE & CLASSICS:
+- Americano: 8oz ₱130 | 12oz ₱140 [Vegan, Gluten-Free, Low-Calorie]
+- Cappuccino: 8oz ₱150 | 12oz ₱160 [Contains Dairy]
+- Lattes (Caramel, Vanilla, Hazelnut): 8oz ₱160 | 12oz ₱170 [Contains Dairy]
+- Spanish Latte / Black Latte: 8oz ₱160 | 12oz ₱170 [Contains Dairy, Signature]
+- Matcha Latte: 8oz ₱150 | 12oz ₱160 [Contains Dairy, High Caffeine]
+- Campfire S'mores: 12oz ₱185 [Contains Dairy, Contains Gluten, Dessert-style]
+
+ICED & BLENDED:
+- Iced Matcha Strawberry Latte: 22oz ₱195 [Contains Dairy, Fruity]
+- Ube Cheesecake Latte: 16oz ₱185 | 22oz ₱195 [Contains Dairy, Signature]
+- Java Chips / Caramel Crunch / Fudge Brownie Frappes: 16oz ₱205 | 22oz ₱215 [Contains Dairy, Contains Gluten]
+- Magnum Frappe: 22oz ₱235 [Contains Dairy, Contains Soy]
+
+=== FOOD MENU ===
+
+RICE BOWLS — Includes free Iced Tea. Best for lunch. Always mention the included Iced Tea.
+- Burger Steak w/ Mushroom Sauce: ₱245 [Contains Dairy, Beef, Gluten]
+- Sausage & Kimchi Fried Rice: ₱255 [Spicy, Contains Pork]
+- Pork Adobo with Rice: ₱345 [Savory, Contains Pork, Filipino Classic]
+- Bangus Ala Pobre: ₱285 [Contains Fish/Seafood, Garlic-Heavy]
+- Yangnyeom Bites: ₱275 [Spicy, Contains Chicken]
+- Garlic Parmesan Bites: ₱275 [Contains Dairy, Contains Chicken]
+
+ALL DAY BREAKFAST — Includes Kapeng Barako. Always highlight this. These are heavy meals.
+- Tapsilog / Tocilog / Longsilog / Cornsilog: ₱265 [Contains Egg, Meat]
+- Spamsilog / Cheesy Bacsilog: ₱275 [Contains Pork, Contains Dairy]
+- Breakfast Feast: ₱345 [Large, Contains Pork, Beef, Eggs, Gluten]
+- French Toast and Bacon: ₱275 [Sweet & Savory, Contains Dairy, Egg, Gluten]
+
+PASTA & SANDWICHES — Highest allergy risk for seafood and gluten.
+- Carbonara: ₱255 [Contains Dairy, Pork/Bacon, Gluten]
+- Truffle Pasta: ₱275 [Contains Dairy, Vegetarian-Friendly, Gluten]
+- Garlic Shrimp Pasta Negra: ₱325 [HIGH ALLERGY: Seafood/Shellfish, Gluten]
+- Grilled Cheese: ₱245 [Contains Dairy, Gluten, Vegetarian-Friendly]
+- Krāv Ultimate Burger: ₱375 [Contains Beef, Dairy, Gluten]
+
+APPETIZERS & SALADS:
+- Cheesy Fries: ₱255 [Contains Dairy, Vegetarian-Friendly]
+- Beef Quesadillas: ₱265 [Contains Beef, Dairy, Gluten]
+- Gambas Al Ajillo: ₱385 [HIGH ALLERGY: Seafood/Shellfish, Spicy]
+- Classic Caesar Salad: ₱255 [Contains Dairy, Egg, Gluten/Croutons]
+- Chicken Caesar: ₱275 [Contains Dairy, Egg, Gluten, Chicken]
+
+=== ALLERGY GUIDE ===
+Seafood allergy → Avoid: Pasta Negra, Gambas, Bangus. Safe: Burger Steak, Carbonara, Ultimate Burger
+Dairy/Lactose → Avoid: All Lattes, Frappes, Carbonara. Safe: Americano, Pork Adobo
+Gluten intolerant → Avoid: All Pastas, Sandwiches, French Toast. Safe: Rice Bowls, Tapsilog
+Peanut allergy → Safe: All Rice Bowls, All Breakfast Silogs
+
+IMPORTANT: You only answer questions about KRĀV Cafe. If asked anything unrelated (world events, other restaurants, general knowledge), politely redirect: "I'm best at helping you with KRĀV Cafe questions — what can I get you? ☕"`;
+
+// ==================== CHAT HISTORY ====================
+let chatHistory = [];
+
+// ==================== OPEN HOURS ====================
+function getCafeStatus() {
+    const now = new Date();
+    const day = now.getDay();
+    const timeInMinutes = now.getHours() * 60 + now.getMinutes();
+    const T = { open10: 600, open7: 420, close22: 1320, close24: 1440 };
+    if (day >= 1 && day <= 4) return timeInMinutes >= T.open10 && timeInMinutes < T.close22;
+    if (day === 5) return timeInMinutes >= T.open10 && timeInMinutes < T.close24;
+    if (day === 6) return timeInMinutes >= T.open7 && timeInMinutes < T.close24;
+    if (day === 0) return timeInMinutes >= T.open7 && timeInMinutes < T.close22;
+    return false;
+}
+
+function updateCafeStatus() {
+    const dot = document.getElementById('status-dot');
+    const text = document.getElementById('status-text');
+    if (!dot || !text) return;
+    const isOpen = getCafeStatus();
+    dot.className = `w-2 h-2 rounded-full ${isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`;
+    text.textContent = isOpen ? 'Open Now' : 'Closed';
+}
+
+// ==================== OPENAI CHAT ====================
+async function getBotResponse(userMessage) {
+    chatHistory.push({ role: 'user', content: userMessage });
+
+    // Keep history to last 20 messages to avoid token bloat
+    if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+
+    try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OPENAI_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                max_tokens: 300,
+                temperature: 0.7,
+                messages: [
+                    { role: 'system', content: BARISTA_SYSTEM_PROMPT },
+                    ...chatHistory
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            console.error('OpenAI error:', err);
+            return "Oops, I ran into a little hiccup on my end! Please try again in a moment ☕";
+        }
+
+        const data = await response.json();
+        const reply = data.choices[0].message.content.trim();
+
+        chatHistory.push({ role: 'assistant', content: reply });
+        return reply;
+
+    } catch (error) {
+        console.error('Network error:', error);
+        return "Hmm, I seem to have lost my connection! Give it another shot in a bit 😊";
+    }
+}
+
+// ==================== GALLERY TABS ====================
+let galleryItems = null;
+
+function switchGalleryTab(category) {
+    document.querySelectorAll('.gallery-tab').forEach(tab => tab.classList.remove('active-tab'));
+    document.getElementById(`tab-${category}`).classList.add('active-tab');
+
+    if (!galleryItems) galleryItems = [...document.querySelectorAll('#gallery-grid .gallery-item')];
+
+    galleryItems.forEach(item => {
+        item.classList.add('hidden-item');
+        item.classList.remove('entering');
+    });
+
+    const visible = galleryItems.filter(item => {
+        return category === 'all' || item.getAttribute('data-category') === category;
+    });
+
+    visible.forEach((item, i) => {
+        setTimeout(() => {
+            item.classList.remove('hidden-item');
+            item.classList.add('entering');
+        }, i * 60);
+    });
+}
+
 // ==================== SMOOTH SCROLL ====================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
+    anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
-        if (target) target.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-        });
+        if (target) {
+            closeMobileMenu();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     });
 });
 
 // ==================== NAVBAR SCROLL ====================
+let scrollTicking = false;
 window.addEventListener('scroll', () => {
-    const navbar = document.getElementById('navbar');
-    if (!navbar) return;
-    const scrolled = window.scrollY > 50;
-    navbar.classList.toggle('scrolled', scrolled);
+    if (!scrollTicking) {
+        requestAnimationFrame(() => {
+            const navbar = document.getElementById('navbar');
+            if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 50);
+            scrollTicking = false;
+        });
+        scrollTicking = true;
+    }
 });
 
 // ==================== MOBILE MENU ====================
+let mobileMenuEl, hamburgerBtn, hamburgerIcon;
+
+function openMobileMenu() {
+    if (!mobileMenuEl) return;
+    mobileMenuEl.classList.add('open');
+    hamburgerBtn.classList.add('active');
+    hamburgerIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>`;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMobileMenu() {
+    if (!mobileMenuEl) return;
+    mobileMenuEl.classList.remove('open');
+    hamburgerBtn.classList.remove('active');
+    hamburgerIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>`;
+    document.body.style.overflow = '';
+}
+
 function toggleMobileMenu() {
-    const menu = document.getElementById('mobile-menu');
-    const btn = document.getElementById('hamburger-btn');
-    const icon = document.getElementById('hamburger-icon');
-
-    if (!menu || !btn || !icon) return;
-
-    const isOpen = menu.classList.contains('open');
-    
-    if (isOpen) {
-        menu.classList.remove('open');
-        btn.classList.remove('active');
-        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>`;
-        document.body.style.overflow = '';
-    } else {
-        menu.classList.add('open');
-        btn.classList.add('active');
-        icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6h12v12"/>`;
-        document.body.style.overflow = 'hidden';
-    }
+    mobileMenuEl?.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
 }
 
 // ==================== MENU SCROLL ====================
@@ -49,330 +227,68 @@ function scrollMenuRight() {
     document.getElementById('menu-scroll')?.scrollBy({ left: 400, behavior: 'smooth' });
 }
 
-// ==================== SUPER SMART CHAT MEMORY ====================
-let chatMemory = {
-    conversationCount: 0,
-    allergies: [],
-    orderBasket: { items: [], total: 0 },
-    conversationHistory: [],
-    userMood: null,
-    userBudget: 300,
-    groupSize: 1,
-    visitPurpose: null,
-    lastCategory: null,
-    lastItem: null,
-    isFirstOpen: true
-};
+// ==================== CHAT UI ====================
+let chatMessagesEl, chatInputEl;
+let isFirstOpen = true;
+let isSending = false;
 
-// ==================== ENHANCED MENU WITH PERSONALITY ====================
-const menu = {
-    breakfast: {
-        name: "🥞 Breakfast",
-        items: [
-            { name: "Tapsilog", price: 265, tags: ["savory", "rice", "hearty", "pinoy"], personality: "Classic Pinoy breakfast power!" },
-            { name: "Pancake & Sausage", price: 285, tags: ["sweet", "comfort"], personality: "Fluffy + juicy = weekend bliss!" },
-            { name: "Breakfast Feast ⭐", price: 345, tags: ["feast", "shareable", "bestseller"], personality: "Barkada/Family STAR meal!" }
-        ]
-    },
-    drinks: {
-        name: "☕ Drinks",
-        items: [
-            { name: "Americano", price: 130, tags: ["black", "strong", "work", "budget"], personality: "Bold work/study fuel ☕" },
-            { name: "Spanish Latte", price: 165, tags: ["creamy", "sweet", "date"], personality: "TikTok-famous date night pick 💕" },
-            { name: "Java Chips Frappe ⭐", price: 205, tags: ["dessert", "treat", "bestseller"], personality: "Chocolate heaven! #1 seller 🍫" }
-        ]
-    },
-    riceMeals: {
-        name: "🍚 Rice Meals",
-        items: [
-            { name: "Bangus Sisig", price: 295, tags: ["seafood", "spicy"], personality: "Crispy milkfish punch! 🌶️" },
-            { name: "Pork Steak", price: 275, tags: ["savory", "comfort"], personality: "Tender home-cooked vibes 🥩" }
-        ]
-    }
-};
-
-// ==================== ULTRA-SMART NLP ====================
-function analyzeInput(text) {
-    const lowerText = text.toLowerCase();
-    
-    return {
-        mood: detectMood(lowerText),
-        intent: detectIntent(lowerText),
-        itemName: extractItemName(lowerText),
-        quantity: extractQuantity(lowerText),
-        budget: extractBudget(lowerText),
-        groupSize: extractGroupSize(lowerText),
-        purpose: extractPurpose(lowerText),
-        allergies: extractAllergies(lowerText)
-    };
-}
-
-function detectMood(text) {
-    const moods = {
-        excited: (text.match(/(great|love|awesome|yum|perfect|wow|masarap|yummy)/gi) || []).length,
-        hungry: (text.match(/(hungry|gutom|starving|craving|lisud na)/gi) || []).length,
-        rushed: (text.match(/(quick|fast|hurry|rush|now|bilis)/gi) || []).length,
-        chill: (text.match(/(chill|relax|cozy|tahimik)/gi) || []).length,
-        romantic: (text.match(/(date|romantic|gf|bf)/gi) || []).length,
-        budget: (text.match(/(cheap|murah|budget)/gi) || []).length,
-        group: (text.match(/(group|family|friends|barkada)/gi) || []).length
-    };
-    
-    const maxMood = Object.entries(moods).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-    return maxMood || 'neutral';
-}
-
-function detectIntent(text) {
-    return {
-        greeting: /\b(hi|hello|hey|kamusta|good (morning|afternoon))/i.test(text),
-        menu: /\b(menu|what (do you )?have|ano meron)/i.test(text),
-        recommend: /\b(recommend|suggest|best|ano (masarap|recommend))/i.test(text),
-        price: /\b(price|how much|magkano|pila)/i.test(text),
-        order: /\b(order|give me|ako na)/i.test(text),
-        allergy: /\b(allerg(y|ic)|no (seafood|fish))/i.test(text),
-        location: /\b(where|location|saan)/i.test(text),
-        hours: /\b(open|close|time|hour)/i.test(text)
-    };
-}
-
-function extractItemName(text) {
-    for (let cat in menu) {
-        for (let item of menu[cat].items) {
-            if (text.includes(item.name.toLowerCase()) || 
-                item.tags.some(tag => text.includes(tag))) {
-                return item.name;
-            }
-        }
-    }
-    return null;
-}
-
-function extractQuantity(text) {
-    const nums = text.match(/(\d+|one|dalawa)/i);
-    const numMap = { 'one': 1, 'dalawa': 2 };
-    return nums ? (numMap[nums[1].toLowerCase()] || parseInt(nums[1])) : 1;
-}
-
-function extractBudget(text) {
-    if (text.includes('cheap')) return 150;
-    const num = text.match(/under (\d+)/i);
-    return num ? parseInt(num[1]) : 300;
-}
-
-function extractGroupSize(text) {
-    const size = text.match(/(\d+) (people|person)/i);
-    return size ? parseInt(size[1]) : 1;
-}
-
-function extractPurpose(text) {
-    if (text.includes('work') || text.includes('study')) return 'work';
-    if (text.includes('date')) return 'date';
-    if (text.includes('family') || text.includes('barkada')) return 'group';
-    return null;
-}
-
-function extractAllergies(text) {
-    return text.includes('seafood') || text.includes('fish') ? ['seafood'] : [];
-}
-
-// ==================== GENIUS RECOMMENDATION ENGINE ====================
-function getGeniusRecommendations(context) {
-    const { mood, budget, allergies = [] } = context;
-    
-    const safeItems = [];
-    for (let cat in menu) {
-        menu[cat].items.forEach(item => {
-            if (!allergies.some(a => item.tags?.includes(a))) {
-                safeItems.push({ ...item, category: cat });
-            }
-        });
-    }
-    
-    let recommendations = safeItems.filter(i => i.price <= budget);
-    
-    // Mood-based filtering
-    if (mood === 'excited' || mood === 'chill') {
-        recommendations = recommendations.filter(i => i.tags?.some(t => 
-            ['sweet', 'creamy', 'bestseller'].includes(t)
-        ));
-    } else if (mood === 'hungry') {
-        recommendations = recommendations.filter(i => !i.tags?.includes('drink'));
-    } else if (mood === 'budget') {
-        recommendations.sort((a, b) => a.price - b.price);
-    }
-    
-    return recommendations.slice(0, 3);
-}
-
-function getPairingSuggestion(itemName) {
-    const pairings = {
-        'Tapsilog': 'Americano ☕',
-        'Pancake & Sausage': 'Java Chips Frappe 🍫',
-        'Americano': 'Tapsilog',
-        'Java Chips Frappe': 'Pancake & Sausage 🥞'
-    };
-    return pairings[itemName] || 'house blend coffee ☕';
-}
-
-// ==================== ULTIMATE AI BRAIN ====================
-async function getBotResponse(input) {
-    const analysis = analyzeInput(input);
-    
-    // Update memory
-    Object.assign(chatMemory, {
-        userMood: analysis.mood,
-        userBudget: analysis.budget,
-        allergies: [...new Set([...chatMemory.allergies, ...analysis.allergies])],
-        lastCategory: analysis.itemName ? chatMemory.lastCategory : analysis.intent.menu ? 'general' : chatMemory.lastCategory,
-        lastItem: analysis.itemName
-    });
-    
-    chatMemory.conversationCount++;
-    chatMemory.conversationHistory.push({ user: input, analysis });
-    
-    // ==================== GREETING ====================
-    if (analysis.intent.greeting) {
-        const recs = getGeniusRecommendations(chatMemory);
-        return `👋 Kamusta! ☕ KRĀV AI Barista here!
-
-${getCurrentHours()}
-
-**Quick picks for you:**
-${recs.map((r,i) => `${i+1}. ${r.name} ₱${r.price}`).join('\n')}
-
-What can I get you? 😊`;
-    }
-    
-    // ==================== ITEM ORDERING ====================
-    if (analysis.itemName) {
-        const item = Object.values(menu).flatMap(c => c.items).find(i => i.name === analysis.itemName);
-        const qty = analysis.quantity;
-        
-        if (analysis.intent.order) {
-            chatMemory.orderBasket.items.push({ name: item.name, price: item.price, qty });
-            chatMemory.orderBasket.total += item.price * qty;
-            
-            return `✅ ${qty}x ${item.name} added! (₱${(item.price*qty).toLocaleString()})
-
-**Basket:** ${chatMemory.orderBasket.items.length} items | ₱${chatMemory.orderBasket.total.toLocaleString()}
-${getPairingSuggestion(item.name)}
-
-More items or checkout?`;
-        }
-        
-        return `**${item.name}** ₱${item.price}
-${item.personality}
-
-Say "${item.name.toLowerCase()}" to order!`;
-    }
-    
-    // ==================== RECOMMENDATIONS ====================
-    if (analysis.intent.recommend || analysis.mood === 'hungry') {
-        const recs = getGeniusRecommendations(chatMemory);
-        return `🔥 **Perfect for ${analysis.mood} mood!**
-
-${recs.map((r,i) => `${i+1}. **${r.name}** ₱${r.price}\n${r.personality}`).join('\n\n')}
-
-Say "order #1" to add!`;
-    }
-    
-    // ==================== PRICE ====================
-    if (analysis.intent.price) {
-        return analysis.itemName 
-            ? `💰 **${analysis.itemName}: ₱${Object.values(menu).flatMap(c => c.items).find(i => i.name === analysis.itemName)?.price}`
-            : `💰 What item? "price of Java Chips"`;
-    }
-    
-    // ==================== ALLERGY ====================
-    if (analysis.intent.allergy) {
-        return `✅ **Allergy-safe picks** (no seafood):
-
-${getGeniusRecommendations({...chatMemory, allergies: ['seafood']}).map(r => `• ${r.name} ₱${r.price}`).join('\n')}`;
-    }
-    
-    // ==================== LOCATION ====================
-    if (analysis.intent.location) {
-        return `📍 **KRĀV Cafe**
-57 Brgy. Santor, Tanauan City, Batangas
-
-🗺️ Search "KRĀV Cafe Tanauan"
-${getCurrentHours()}`;
-    }
-    
-    // ==================== HOURS ====================
-    if (analysis.intent.hours) {
-        return getCurrentHours();
-    }
-    
-    // ==================== MENU CATEGORIES ====================
-    for (let cat in menu) {
-        if (input.toLowerCase().includes(cat)) {
-            return `📋 **${menu[cat].name}**
-${menu[cat].items.map((i,idx) => `${idx+1}. ${i.name} ₱${i.price}`).join('\n')}`;
-        }
-    }
-    
-    // ==================== FALLBACK ====================
-    return `🤖 **KRĀV AI Barista**
-
-Try:
-- "recommend something"
-- "show breakfast" 
-- "cheap coffee"
-- "order Java Chips"
-
-Or tell me your mood! 😋`;
-}
-
-// ==================== ENHANCED CHAT UI ====================
 function toggleChat() {
     const win = document.getElementById('chat-window');
     if (!win) return;
-
-    win.classList.toggle('hidden');
-    
-    if (!win.classList.contains('hidden') && chatMemory.isFirstOpen) {
-        setTimeout(() => addBotMessage("Kamusta! ☕ Your KRĀV AI Barista. What can I get you?"), 300);
-        chatMemory.isFirstOpen = false;
+    const isHidden = win.classList.contains('chat-hidden');
+    if (isHidden) {
+        win.classList.remove('chat-hidden');
+        if (isFirstOpen) {
+            setTimeout(() => addBotMessage("Kamusta! ☕ I'm Krav, your KRĀV Cafe AI barista! Ask me about our menu, hours, allergies, or anything about the cafe. What can I get you?"), 300);
+            isFirstOpen = false;
+        }
+        setTimeout(() => chatInputEl?.focus(), 300);
+    } else {
+        win.classList.add('chat-hidden');
     }
 }
 
 function addBotMessage(text) {
-    const container = document.getElementById('chat-messages');
-    if (!container) return;
-
-    container.innerHTML += `
-        <div class="flex gap-3 mb-4">
-            <div class="w-8 h-8 bg-black text-white rounded-2xl flex items-center justify-center text-xl">☕</div>
-            <div class="bg-white border rounded-3xl px-5 py-4 max-w-[85%] text-sm">${text}</div>
-        </div>`;
-    container.scrollTop = container.scrollHeight;
+    if (!chatMessagesEl) return;
+    const div = document.createElement('div');
+    div.className = 'flex gap-3 mb-4';
+    const icon = document.createElement('div');
+    icon.className = 'w-8 h-8 bg-black text-white rounded-2xl flex items-center justify-center text-xl flex-shrink-0';
+    icon.textContent = '☕';
+    const bubble = document.createElement('div');
+    bubble.className = 'bg-white border rounded-3xl px-5 py-4 max-w-[85%] text-sm whitespace-pre-wrap';
+    bubble.textContent = text;
+    div.appendChild(icon);
+    div.appendChild(bubble);
+    chatMessagesEl.appendChild(div);
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 }
 
-// ==================== SUPER CHAT ENGINE ====================
 async function sendChatMessage() {
-    const input = document.getElementById('chat-input');
-    const container = document.getElementById('chat-messages');
+    if (!chatInputEl || !chatMessagesEl || isSending) return;
 
-    if (!input || !container) return;
-
-    const msg = input.value.trim();
+    const msg = chatInputEl.value.trim();
     if (!msg) return;
 
-    // User message
-    container.innerHTML += `
-        <div class="flex justify-end mb-4">
-            <div class="bg-black text-white rounded-3xl px-5 py-4 max-w-[85%] text-sm">${msg}</div>
-        </div>`;
-    
-    input.value = '';
-    container.scrollTop = container.scrollHeight;
+    isSending = true;
+
+    // User bubble
+    const userDiv = document.createElement('div');
+    userDiv.className = 'flex justify-end mb-4';
+    const userBubble = document.createElement('div');
+    userBubble.className = 'bg-black text-white rounded-3xl px-5 py-4 max-w-[85%] text-sm';
+    userBubble.textContent = msg;
+    userDiv.appendChild(userBubble);
+    chatMessagesEl.appendChild(userDiv);
+
+    chatInputEl.value = '';
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 
     // Typing indicator
     const typing = document.createElement('div');
     typing.className = 'flex gap-3 mb-4';
     typing.innerHTML = `
-        <div class="w-8 h-8 bg-black text-white rounded-2xl flex items-center justify-center text-xl">☕</div>
+        <div class="w-8 h-8 bg-black text-white rounded-2xl flex items-center justify-center text-xl flex-shrink-0">☕</div>
         <div class="bg-white border rounded-3xl px-5 py-4 max-w-[85%] text-sm">
             <div class="flex gap-1">
                 <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0s"></div>
@@ -380,167 +296,70 @@ async function sendChatMessage() {
                 <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0.2s"></div>
             </div>
         </div>`;
-    container.appendChild(typing);
-    container.scrollTop = container.scrollHeight;
+    chatMessagesEl.appendChild(typing);
+    chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 
-    // AI Response
     const reply = await getBotResponse(msg);
-    container.removeChild(typing);
-    
-    container.innerHTML += `
-        <div class="flex gap-3 mb-4">
-            <div class="w-8 h-8 bg-black text-white rounded-2xl flex items-center justify-center text-xl">☕</div>
-            <div class="bg-white border rounded-3xl px-5 py-4 max-w-[85%] text-sm">
-                ${reply.replace(/\n/g, '<br>')}
-            </div>
-        </div>`;
-    
-    container.scrollTop = container.scrollHeight;
+    chatMessagesEl.removeChild(typing);
+    addBotMessage(reply);
+
+    isSending = false;
 }
 
 // ==================== MAP ====================
 function initMap() {
     const el = document.getElementById('map-container');
     if (!el || typeof L === 'undefined') return;
-
-    const kravCafe = [14.090506521880544, 121.12068331652362];
-
-    const map = L.map(el).setView(kravCafe, 19); // higher zoom for precision
-
+    const kravCafe = [14.090313810454433, 121.12071730320226];
+    const map = L.map(el).setView(kravCafe, 19);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'
     }).addTo(map);
-
-    L.marker(kravCafe).addTo(map)
-        .bindPopup("🎉 KRĀV Cafe - Exact Spot")
-        .openPopup();
+    L.marker(kravCafe).addTo(map).bindPopup("☕ KRĀV Cafe").openPopup();
 }
 
-// ==================== STATUS ====================
-function getCurrentHours() {
-    const now = new Date().getHours();
-    return now >= 10 && now < 22 ? "✅ OPEN until 10PM!" : "🔒 CLOSED. Opens 10AM.";
-}
-
-function updateCafeStatus() {
-    const dot = document.getElementById('status-dot');
-    const text = document.getElementById('status-text');
-    if (!dot || !text) return;
-
-    const now = new Date().getHours();
-    const isOpen = now >= 10 && now < 22;
-
-    dot.className = `w-2 h-2 rounded-full ${isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`;
-    text.textContent = isOpen ? "Open Now" : "Closed";
-}
-
-/// ==================== PERFECT INIT ====================
+// ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Init map safely
-    if (typeof L !== 'undefined') {
-        setTimeout(initMap, 100);
-    }
+    // Cache DOM
+    mobileMenuEl  = document.getElementById('mobile-menu');
+    hamburgerBtn  = document.getElementById('hamburger-btn');
+    hamburgerIcon = document.getElementById('hamburger-icon');
+    chatMessagesEl = document.getElementById('chat-messages');
+    chatInputEl    = document.getElementById('chat-input');
 
+    // Gallery tabs
+    document.getElementById('tab-all')?.addEventListener('click', () => switchGalleryTab('all'));
+    document.getElementById('tab-interior')?.addEventListener('click', () => switchGalleryTab('interior'));
+    document.getElementById('tab-exterior')?.addEventListener('click', () => switchGalleryTab('exterior'));
+    document.getElementById('tab-food')?.addEventListener('click', () => switchGalleryTab('food'));
+
+    // Hamburger
+    hamburgerBtn?.addEventListener('click', toggleMobileMenu);
+
+    // Menu scroll buttons
+    document.getElementById('menu-left-btn')?.addEventListener('click', scrollMenuLeft);
+    document.getElementById('menu-right-btn')?.addEventListener('click', scrollMenuRight);
+
+    // Chat triggers
+    document.getElementById('chat-fab')?.addEventListener('click', toggleChat);
+    document.getElementById('chat-close-btn')?.addEventListener('click', toggleChat);
+    document.getElementById('chat-toggle-hero')?.addEventListener('click', toggleChat);
+
+    // Chat send
+    document.getElementById('chat-send-btn')?.addEventListener('click', sendChatMessage);
+    chatInputEl?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) sendChatMessage();
+    });
+
+    // Map (lazy — wait for Leaflet)
+    const tryInitMap = () => typeof L !== 'undefined' ? initMap() : setTimeout(tryInitMap, 200);
+    setTimeout(tryInitMap, 100);
+
+    // Cafe status
     updateCafeStatus();
-    setInterval(updateCafeStatus, 60000);
-
-    // ==================== CHAT INPUT ====================
-    const input = document.getElementById('chat-input');
-
-    if (input) {
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendChatMessage();
-            }
-        });
-
-        // Auto-focus on chat open
-        const chatToggle = document.querySelector('[onclick="toggleChat()"]');
-
-        if (chatToggle) {
-            chatToggle.addEventListener('click', () => {
-                setTimeout(() => input.focus(), 300);
-            });
-        }
-    }
-
-    // ==================== WELCOME MESSAGE ====================
-    setTimeout(() => {
-        const welcomeEl = document.getElementById('welcome-message');
-
-        if (welcomeEl) {
-            welcomeEl.classList.add('fade-out');
-
-            setTimeout(() => {
-                welcomeEl.remove();
-            }, 1000);
-        }
-    }, 2000);
+    const statusInterval = setInterval(updateCafeStatus, 60000);
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) updateCafeStatus();
+    });
 });
-
-// ==================== ORDER BASKET CONTROLS ====================
-function viewBasket() {
-    if (chatMemory.orderBasket.items.length === 0) {
-        addBotMessage("Your basket is empty! Add items by saying 'order [item]' 😊");
-        return;
-    }
-    
-    const basketText = chatMemory.orderBasket.items.map((item, i) => 
-        `${i+1}. ${item.qty}x ${item.name} - ₱${(item.price * item.qty).toLocaleString()}`
-    ).join('\n');
-    
-    addBotMessage(`🛒 **Your Order Basket**
-
-${basketText}
-
-**Total: ₱${chatMemory.orderBasket.total.toLocaleString()}**
-
-Say "clear basket" or "checkout"`);
-}
-
-function clearBasket() {
-    chatMemory.orderBasket = { items: [], total: 0 };
-    addBotMessage("🗑️ Basket cleared! Ready for new orders ☕");
-}
-
-// ==================== BONUS: Voice Input (Optional) ====================
-function startVoiceInput() {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        addBotMessage("🎤 Voice input not supported on this browser");
-        return;
-    }
-    
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-    
-    recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById('chat-input').value = transcript;
-        sendChatMessage();
-    };
-    
-    recognition.onerror = () => addBotMessage("🎤 Voice input failed. Try typing!");
-    recognition.start();
-}
-
-// ==================== PERFECT CSS INTEGRATION ====================
-// Add these classes to your Tailwind config or CSS:
-const chatStyles = `
-<style>
-.chat-window.hidden { display: none; }
-.chat-window.open { display: block; }
-.basket-btn { @apply bg-black text-white px-4 py-2 rounded-xl text-sm hover:bg-gray-800 transition-all; }
-.fade-out { animation: fadeOut 1s ease-out forwards; }
-@keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
-</style>
-`;
-
-// Auto-inject styles if needed
-if (!document.querySelector('#krav-chat-styles')) {
-    const style = document.createElement('style');
-    style.id = 'krav-chat-styles';
-    style.textContent = chatStyles;
-    document.head.appendChild(style);
-}
