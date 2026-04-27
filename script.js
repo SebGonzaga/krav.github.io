@@ -1,5 +1,5 @@
 // ==================== CONFIGURATION ====================
-const OPENAI_API_KEY = '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'; // ⚠️ Replace this before going live
+const OPENAI_API_KEY = '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'; // ⚠️ Replace this before going live
 
 const BARISTA_SYSTEM_PROMPT = `You are Krav, the friendly AI barista at KRĀV Cafe Tanauan — a cozy cafe located at 57 Brgy. Santor, Tanauan City, Batangas, Philippines.
 
