@@ -1,5 +1,5 @@
 // ==================== CONFIGURATION ====================
-const OPENAI_API_KEY = ''; // ⚠️ Replace this before going live
+const OPENAI_API_KEY = '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'; // ⚠️ Replace this before going live
 
 const BARISTA_SYSTEM_PROMPT = `You are Krav, the friendly AI barista at KRĀV Cafe Tanauan — a cozy cafe located at 57 Brgy. Santor, Tanauan City, Batangas, Philippines.
 
@@ -291,13 +291,19 @@ function initMenuDragScroll() {
 let chatMessagesEl, chatInputEl;
 let isSending = false;
 
-// Chat starts blank — no auto welcome message
+// Chat starts with a greeting only on first open
+let isFirstOpen = true;
+
 function toggleChat() {
     const win = document.getElementById('chat-window');
     if (!win) return;
     const isHidden = win.classList.contains('chat-hidden');
     if (isHidden) {
         win.classList.remove('chat-hidden');
+        if (isFirstOpen) {
+            setTimeout(() => addBotMessage("Kamusta! ☕ I'm Krav, your KRĀV Cafe AI barista! Ask me about our menu, hours, or anything about the cafe. What can I get you today?"), 300);
+            isFirstOpen = false;
+        }
         setTimeout(() => chatInputEl?.focus(), 300);
     } else {
         win.classList.add('chat-hidden');
