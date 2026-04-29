@@ -97,6 +97,12 @@ h1, h2, h3, h4, h5, h6 {
 #menu-scroll {
     scrollbar-width: none;
     -ms-overflow-style: none;
+    cursor: grab;
+}
+
+#menu-scroll.dragging {
+    cursor: grabbing;
+    scroll-snap-type: none; /* disable snap while dragging for smoother feel */
 }
 
 #menu-scroll::-webkit-scrollbar {

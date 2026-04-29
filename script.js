@@ -1,5 +1,5 @@
 // ==================== CONFIGURATION ====================
-const OPENAI_API_KEY = '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'; // ⚠️ Replace this before going live
+const OPENAI_API_KEY = ''; // ⚠️ Replace this before going live
 
 const BARISTA_SYSTEM_PROMPT = `You are Krav, the friendly AI barista at KRĀV Cafe Tanauan — a cozy cafe located at 57 Brgy. Santor, Tanauan City, Batangas, Philippines.
 
@@ -105,8 +105,6 @@ function updateCafeStatus() {
 // ==================== OPENAI CHAT ====================
 async function getBotResponse(userMessage) {
     chatHistory.push({ role: 'user', content: userMessage });
-
-    // Keep history to last 20 messages to avoid token bloat
     if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
 
     try {
@@ -135,7 +133,6 @@ async function getBotResponse(userMessage) {
 
         const data = await response.json();
         const reply = data.choices[0].message.content.trim();
-
         chatHistory.push({ role: 'assistant', content: reply });
         return reply;
 
@@ -159,9 +156,9 @@ function switchGalleryTab(category) {
         item.classList.remove('entering');
     });
 
-    const visible = galleryItems.filter(item => {
-        return category === 'all' || item.getAttribute('data-category') === category;
-    });
+    const visible = galleryItems.filter(item =>
+        category === 'all' || item.getAttribute('data-category') === category
+    );
 
     visible.forEach((item, i) => {
         setTimeout(() => {
@@ -173,7 +170,7 @@ function switchGalleryTab(category) {
 
 // ==================== SMOOTH SCROLL ====================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+    anchor.addEventListener('click', function(e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
@@ -219,7 +216,7 @@ function toggleMobileMenu() {
     mobileMenuEl?.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
 }
 
-// ==================== MENU SCROLL ====================
+// ==================== MENU SCROLL BUTTONS ====================
 function scrollMenuLeft() {
     document.getElementById('menu-scroll')?.scrollBy({ left: -400, behavior: 'smooth' });
 }
@@ -227,21 +224,80 @@ function scrollMenuRight() {
     document.getElementById('menu-scroll')?.scrollBy({ left: 400, behavior: 'smooth' });
 }
 
+// ==================== MENU DRAG TO SCROLL (Desktop) ====================
+function initMenuDragScroll() {
+    const slider = document.getElementById('menu-scroll');
+    if (!slider) return;
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let velX = 0;
+    let lastX = 0;
+    let lastTime = 0;
+    let rafId = null;
+
+    // Momentum glide after release
+    function glide() {
+        velX *= 0.92; // friction — lower = stops faster, higher = longer glide
+        if (Math.abs(velX) < 0.5) return;
+        slider.scrollLeft += velX;
+        rafId = requestAnimationFrame(glide);
+    }
+
+    slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        slider.classList.add('dragging');
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+        lastX = e.pageX;
+        lastTime = Date.now();
+        velX = 0;
+        cancelAnimationFrame(rafId);
+        e.preventDefault();
+    });
+
+    slider.addEventListener('mouseleave', () => {
+        if (!isDown) return;
+        isDown = false;
+        slider.classList.remove('dragging');
+        rafId = requestAnimationFrame(glide);
+    });
+
+    slider.addEventListener('mouseup', () => {
+        if (!isDown) return;
+        isDown = false;
+        slider.classList.remove('dragging');
+        rafId = requestAnimationFrame(glide);
+    });
+
+    slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        const x = e.pageX - slider.offsetLeft;
+        const now = Date.now();
+        const dt = now - lastTime || 1;
+
+        // Track velocity (pixels per ms)
+        velX = (lastX - e.pageX) / dt * 16; // scale to ~60fps frame
+        lastX = e.pageX;
+        lastTime = now;
+
+        const walk = (x - startX) * 1.2;
+        slider.scrollLeft = scrollLeft - walk;
+    });
+}
+
 // ==================== CHAT UI ====================
 let chatMessagesEl, chatInputEl;
-let isFirstOpen = true;
 let isSending = false;
 
+// Chat starts blank — no auto welcome message
 function toggleChat() {
     const win = document.getElementById('chat-window');
     if (!win) return;
     const isHidden = win.classList.contains('chat-hidden');
     if (isHidden) {
         win.classList.remove('chat-hidden');
-        if (isFirstOpen) {
-            setTimeout(() => addBotMessage("Kamusta! ☕ I'm Krav, your KRĀV Cafe AI barista! Ask me about our menu, hours, allergies, or anything about the cafe. What can I get you?"), 300);
-            isFirstOpen = false;
-        }
         setTimeout(() => chatInputEl?.focus(), 300);
     } else {
         win.classList.add('chat-hidden');
@@ -272,7 +328,6 @@ async function sendChatMessage() {
 
     isSending = true;
 
-    // User bubble
     const userDiv = document.createElement('div');
     userDiv.className = 'flex justify-end mb-4';
     const userBubble = document.createElement('div');
@@ -284,7 +339,6 @@ async function sendChatMessage() {
     chatInputEl.value = '';
     chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 
-    // Typing indicator
     const typing = document.createElement('div');
     typing.className = 'flex gap-3 mb-4';
     typing.innerHTML = `
@@ -321,10 +375,9 @@ function initMap() {
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Cache DOM
-    mobileMenuEl  = document.getElementById('mobile-menu');
-    hamburgerBtn  = document.getElementById('hamburger-btn');
-    hamburgerIcon = document.getElementById('hamburger-icon');
+    mobileMenuEl   = document.getElementById('mobile-menu');
+    hamburgerBtn   = document.getElementById('hamburger-btn');
+    hamburgerIcon  = document.getElementById('hamburger-icon');
     chatMessagesEl = document.getElementById('chat-messages');
     chatInputEl    = document.getElementById('chat-input');
 
@@ -337,28 +390,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hamburger
     hamburgerBtn?.addEventListener('click', toggleMobileMenu);
 
-    // Menu scroll buttons
+    // Menu scroll buttons + drag
     document.getElementById('menu-left-btn')?.addEventListener('click', scrollMenuLeft);
     document.getElementById('menu-right-btn')?.addEventListener('click', scrollMenuRight);
+    initMenuDragScroll();
 
-    // Chat triggers
+    // Chat
     document.getElementById('chat-fab')?.addEventListener('click', toggleChat);
     document.getElementById('chat-close-btn')?.addEventListener('click', toggleChat);
     document.getElementById('chat-toggle-hero')?.addEventListener('click', toggleChat);
-
-    // Chat send
     document.getElementById('chat-send-btn')?.addEventListener('click', sendChatMessage);
     chatInputEl?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) sendChatMessage();
     });
 
-    // Map (lazy — wait for Leaflet)
+    // Map
     const tryInitMap = () => typeof L !== 'undefined' ? initMap() : setTimeout(tryInitMap, 200);
     setTimeout(tryInitMap, 100);
 
     // Cafe status
     updateCafeStatus();
-    const statusInterval = setInterval(updateCafeStatus, 60000);
+    setInterval(updateCafeStatus, 60000);
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden) updateCafeStatus();
     });
