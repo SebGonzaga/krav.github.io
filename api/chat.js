@@ -3,7 +3,7 @@
 // Vercel environment variable "gemini" (set in Project Settings > Environment
 // Variables), so it never gets sent to the browser and never lives in git.
 
-const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_MODEL = 'gemini-3.1-flash-lite';
 
 const BARISTA_SYSTEM_PROMPT = `You are Krav, the friendly AI barista at KRĀV Cafe Tanauan — a cozy cafe located at 57 Brgy. Santor, Tanauan City, Batangas, Philippines.
 
