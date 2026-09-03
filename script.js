@@ -1,5 +1,20 @@
 // ==================== CONFIGURATION ====================
-const OPENAI_API_KEY = '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'; // ⚠️ Replace this before going live
+// ⚠️ IMPORTANT — SECURITY NOTE FOR STATIC (GitHub Pages) SITES ⚠️
+// This site has no server, so any key placed here ships in plain text to every
+// visitor's browser and is visible in your public GitHub repo. There is no way
+// to fully hide it on a pure static site. To limit the damage:
+//   1. Get a key at https://aistudio.google.com/app/apikey
+//   2. In Google Cloud Console, restrict the key to "Websites" and add your
+//      exact domain (e.g. https://kravcafetanauan.com/* and your github.io URL)
+//      so it can't be used from anywhere else.
+//   3. Set a low daily quota / budget alert on the key.
+//   4. Never commit your real key — consider keeping it out of git history,
+//      e.g. via a separate untracked config file, if your host supports it.
+// If you want the key fully hidden, you'll need a tiny server-side proxy
+// (Cloudflare Worker, Vercel/Netlify function, etc.) instead of calling the
+// AI API directly from the browser.
+const GEMINI_API_KEY = 'AQ.Ab8RN6KkMa2GMRArbk7BIc5vwIHhMV8D9_Mx4kGItx-WnwpNzA'; // ⚠️ Replace with your own key before going live
+const GEMINI_MODEL = 'gemini-2.5-flash';
 
 const BARISTA_SYSTEM_PROMPT = `You are Krav, the friendly AI barista at KRĀV Cafe Tanauan — a cozy cafe located at 57 Brgy. Santor, Tanauan City, Batangas, Philippines.
 
@@ -102,42 +117,64 @@ function updateCafeStatus() {
     text.textContent = isOpen ? 'Open Now' : 'Closed';
 }
 
-// ==================== OPENAI CHAT ====================
+// ==================== GEMINI CHAT ====================
 async function getBotResponse(userMessage) {
-    chatHistory.push({ role: 'user', content: userMessage });
+    // Fail gracefully (and cheaply) if the site owner hasn't configured a key yet,
+    // instead of firing a doomed network request on every message.
+    if (!GEMINI_API_KEY || GEMINI_API_KEY.startsWith('YOUR_')) {
+        console.error('Gemini API key is not configured in script.js');
+        return "Our AI barista isn't set up just yet — please try again later, or ask our staff directly 😊";
+    }
+
+    chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
     if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
 
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENAI_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: 'gpt-4o-mini',
-                max_tokens: 300,
-                temperature: 0.7,
-                messages: [
-                    { role: 'system', content: BARISTA_SYSTEM_PROMPT },
-                    ...chatHistory
-                ]
-            })
-        });
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    system_instruction: { parts: [{ text: BARISTA_SYSTEM_PROMPT }] },
+                    contents: chatHistory,
+                    generationConfig: {
+                        temperature: 0.7,
+                        maxOutputTokens: 300
+                    },
+                    safetySettings: [
+                        { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
+                        { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
+                        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
+                        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' }
+                    ]
+                })
+            }
+        );
 
         if (!response.ok) {
-            const err = await response.json();
-            console.error('OpenAI error:', err);
+            const err = await response.json().catch(() => ({}));
+            console.error('Gemini error:', err);
+            chatHistory.pop(); // don't keep a message that never got a real reply
             return "Oops, I ran into a little hiccup on my end! Please try again in a moment ☕";
         }
 
         const data = await response.json();
-        const reply = data.choices[0].message.content.trim();
-        chatHistory.push({ role: 'assistant', content: reply });
+        const candidate = data?.candidates?.[0];
+        const reply = candidate?.content?.parts?.map(p => p.text).join('').trim();
+
+        if (!reply) {
+            console.error('Gemini returned no usable reply:', data);
+            chatHistory.pop();
+            return "Hmm, I didn't quite catch that — mind asking in a different way? 😊";
+        }
+
+        chatHistory.push({ role: 'model', parts: [{ text: reply }] });
         return reply;
 
     } catch (error) {
         console.error('Network error:', error);
+        chatHistory.pop();
         return "Hmm, I seem to have lost my connection! Give it another shot in a bit 😊";
     }
 }
@@ -366,6 +403,50 @@ async function sendChatMessage() {
     isSending = false;
 }
 
+// ==================== GALLERY LIGHTBOX ====================
+// Gallery items already had cursor-pointer styling implying they're clickable,
+// but nothing happened on click — this wires up an actual lightbox.
+let lightboxEl, lightboxImgEl, lightboxCaptionEl;
+let lightboxList = [];
+let lightboxIndex = 0;
+
+function getVisibleGalleryItems() {
+    return [...document.querySelectorAll('#gallery-grid .gallery-item')]
+        .filter(item => !item.classList.contains('hidden-item'));
+}
+
+function showLightboxImage() {
+    const item = lightboxList[lightboxIndex];
+    if (!item || !lightboxImgEl) return;
+    const img = item.querySelector('.gallery-img');
+    const caption = item.querySelector('.gallery-caption');
+    lightboxImgEl.src = img?.src || '';
+    lightboxImgEl.alt = img?.alt || '';
+    if (lightboxCaptionEl) lightboxCaptionEl.textContent = caption?.textContent?.trim() || '';
+}
+
+function openLightbox(clickedItem) {
+    lightboxList = getVisibleGalleryItems();
+    lightboxIndex = lightboxList.indexOf(clickedItem);
+    if (lightboxIndex === -1) lightboxIndex = 0;
+    showLightboxImage();
+    lightboxEl?.classList.remove('hidden');
+    lightboxEl?.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    lightboxEl?.classList.add('hidden');
+    lightboxEl?.classList.remove('flex');
+    document.body.style.overflow = '';
+}
+
+function lightboxStep(direction) {
+    if (!lightboxList.length) return;
+    lightboxIndex = (lightboxIndex + direction + lightboxList.length) % lightboxList.length;
+    showLightboxImage();
+}
+
 // ==================== MAP ====================
 function initMap() {
     const el = document.getElementById('map-container');
@@ -386,12 +467,33 @@ document.addEventListener('DOMContentLoaded', () => {
     hamburgerIcon  = document.getElementById('hamburger-icon');
     chatMessagesEl = document.getElementById('chat-messages');
     chatInputEl    = document.getElementById('chat-input');
+    lightboxEl        = document.getElementById('lightbox');
+    lightboxImgEl     = document.getElementById('lightbox-img');
+    lightboxCaptionEl = document.getElementById('lightbox-caption');
 
     // Gallery tabs
     document.getElementById('tab-all')?.addEventListener('click', () => switchGalleryTab('all'));
     document.getElementById('tab-interior')?.addEventListener('click', () => switchGalleryTab('interior'));
     document.getElementById('tab-exterior')?.addEventListener('click', () => switchGalleryTab('exterior'));
     document.getElementById('tab-food')?.addEventListener('click', () => switchGalleryTab('food'));
+
+    // Gallery lightbox
+    document.getElementById('gallery-grid')?.addEventListener('click', (e) => {
+        const item = e.target.closest('.gallery-item');
+        if (item) openLightbox(item);
+    });
+    document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
+    document.getElementById('lightbox-prev')?.addEventListener('click', () => lightboxStep(-1));
+    document.getElementById('lightbox-next')?.addEventListener('click', () => lightboxStep(1));
+    lightboxEl?.addEventListener('click', (e) => {
+        if (e.target === lightboxEl) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (!lightboxEl || lightboxEl.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') lightboxStep(-1);
+        if (e.key === 'ArrowRight') lightboxStep(1);
+    });
 
     // Hamburger
     hamburgerBtn?.addEventListener('click', toggleMobileMenu);
@@ -406,8 +508,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('chat-close-btn')?.addEventListener('click', toggleChat);
     document.getElementById('chat-toggle-hero')?.addEventListener('click', toggleChat);
     document.getElementById('chat-send-btn')?.addEventListener('click', sendChatMessage);
-    chatInputEl?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) sendChatMessage();
+    chatInputEl?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendChatMessage();
+        }
     });
 
     // Map
