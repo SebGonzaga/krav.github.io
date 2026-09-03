@@ -332,25 +332,25 @@
     <div data-category="food" class="gallery-item group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
         <img src="651728019_122195992874489127_3498653628722874062_n.jpg" alt="Food at KRĀV Cafe" class="gallery-img w-full h-full object-cover" loading="lazy" width="400" height="400">
         <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-            <p class="text-white text-lg gallery-caption"></p>
+            <p class="text-white text-lg gallery-caption">Food</p>
         </div>
     </div>
     <div data-category="food" class="gallery-item group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
         <img src="672090592_122199628412489127_2693550450142691144_n.jpg" alt="Drinks at KRĀV Cafe" class="gallery-img w-full h-full object-cover" loading="lazy" width="400" height="400">
         <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-            <p class="text-white text-lg gallery-caption"></p>
+            <p class="text-white text-lg gallery-caption">Drinks</p>
         </div>
     </div>
     <div data-category="food" class="gallery-item group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
         <img src="677178777_122200492862489127_2851381876675902753_n.jpg" alt="Coffee at KRĀV Cafe" class="gallery-img w-full h-full object-cover" loading="lazy" width="400" height="400">
         <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-            <p class="text-white text-lg gallery-caption"></p>
+            <p class="text-white text-lg gallery-caption">Coffee</p>
         </div>
     </div>
     <div data-category="food" class="gallery-item group relative overflow-hidden rounded-3xl aspect-square cursor-pointer">
         <img src="680185936_122201196512489127_4954800110681773099_n.jpg" alt="Meal at KRĀV Cafe" class="gallery-img w-full h-full object-cover" loading="lazy" width="400" height="400">
         <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-            <p class="text-white text-lg gallery-caption"></p>
+            <p class="text-white text-lg gallery-caption">Meal</p>
         </div>
     </div>
 
@@ -431,6 +431,17 @@
                     ↑
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Gallery Lightbox -->
+    <div id="lightbox" class="hidden fixed inset-0 bg-black/90 z-[999999] items-center justify-center p-4">
+        <button id="lightbox-close" aria-label="Close" class="absolute top-6 right-6 text-white text-4xl leading-none hover:text-white/70 transition-colors">×</button>
+        <button id="lightbox-prev" aria-label="Previous image" class="absolute left-2 md:left-8 text-white text-4xl md:text-5xl hover:text-white/70 transition-colors px-2">‹</button>
+        <button id="lightbox-next" aria-label="Next image" class="absolute right-2 md:right-8 text-white text-4xl md:text-5xl hover:text-white/70 transition-colors px-2">›</button>
+        <div class="max-w-4xl w-full max-h-[85vh] flex flex-col items-center">
+            <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[75vh] object-contain rounded-2xl">
+            <p id="lightbox-caption" class="text-white text-lg mt-4"></p>
         </div>
     </div>
 

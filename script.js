@@ -1,96 +1,9 @@
 // ==================== CONFIGURATION ====================
-// ⚠️ IMPORTANT — SECURITY NOTE FOR STATIC (GitHub Pages) SITES ⚠️
-// This site has no server, so any key placed here ships in plain text to every
-// visitor's browser and is visible in your public GitHub repo. There is no way
-// to fully hide it on a pure static site. To limit the damage:
-//   1. Get a key at https://aistudio.google.com/app/apikey
-//   2. In Google Cloud Console, restrict the key to "Websites" and add your
-//      exact domain (e.g. https://kravcafetanauan.com/* and your github.io URL)
-//      so it can't be used from anywhere else.
-//   3. Set a low daily quota / budget alert on the key.
-//   4. Never commit your real key — consider keeping it out of git history,
-//      e.g. via a separate untracked config file, if your host supports it.
-// If you want the key fully hidden, you'll need a tiny server-side proxy
-// (Cloudflare Worker, Vercel/Netlify function, etc.) instead of calling the
-// AI API directly from the browser.
-const GEMINI_API_KEY = 'AQ.Ab8RN6KkMa2GMRArbk7BIc5vwIHhMV8D9_Mx4kGItx-WnwpNzA'; // ⚠️ Replace with your own key before going live
-const GEMINI_MODEL = 'gemini-2.5-flash';
-
-const BARISTA_SYSTEM_PROMPT = `You are Krav, the friendly AI barista at KRĀV Cafe Tanauan — a cozy cafe located at 57 Brgy. Santor, Tanauan City, Batangas, Philippines.
-
-Your personality:
-- Warm, upbeat, and conversational — like a real barista who knows their regulars
-- You speak naturally, mixing light Filipino expressions (like "po", "ate/kuya", "sure naman!") occasionally but not excessively
-- You use coffee/food emojis sparingly to keep things fun ☕
-- You NEVER make up items, prices, or information not listed below
-- If asked something outside your knowledge, say: "Hmm, I'm not sure about that one! Best to ask our staff directly 😊"
-- Keep responses concise — 2 to 5 sentences max unless listing items
-
-=== OPERATING HOURS ===
-Monday–Thursday: 10:00 AM – 10:00 PM
-Friday: 10:00 AM – 12:00 MN
-Saturday: 7:00 AM – 12:00 MN
-Sunday: 7:00 AM – 10:00 PM
-
-=== AMENITIES ===
-- 77 seats | 20 parking spots
-- Free high-speed Wi-Fi | Work-ready outlets
-- Pet friendly | Drive-thru available
-- GrabFood delivery | Phone support available
-
-=== BEVERAGE MENU ===
-
-HOT COFFEE & CLASSICS:
-- Americano: 8oz ₱130 | 12oz ₱140 [Vegan, Gluten-Free, Low-Calorie]
-- Cappuccino: 8oz ₱150 | 12oz ₱160 [Contains Dairy]
-- Lattes (Caramel, Vanilla, Hazelnut): 8oz ₱160 | 12oz ₱170 [Contains Dairy]
-- Spanish Latte / Black Latte: 8oz ₱160 | 12oz ₱170 [Contains Dairy, Signature]
-- Matcha Latte: 8oz ₱150 | 12oz ₱160 [Contains Dairy, High Caffeine]
-- Campfire S'mores: 12oz ₱185 [Contains Dairy, Contains Gluten, Dessert-style]
-
-ICED & BLENDED:
-- Iced Matcha Strawberry Latte: 22oz ₱195 [Contains Dairy, Fruity]
-- Ube Cheesecake Latte: 16oz ₱185 | 22oz ₱195 [Contains Dairy, Signature]
-- Java Chips / Caramel Crunch / Fudge Brownie Frappes: 16oz ₱205 | 22oz ₱215 [Contains Dairy, Contains Gluten]
-- Magnum Frappe: 22oz ₱235 [Contains Dairy, Contains Soy]
-
-=== FOOD MENU ===
-
-RICE BOWLS — Includes free Iced Tea. Best for lunch. Always mention the included Iced Tea.
-- Burger Steak w/ Mushroom Sauce: ₱245 [Contains Dairy, Beef, Gluten]
-- Sausage & Kimchi Fried Rice: ₱255 [Spicy, Contains Pork]
-- Pork Adobo with Rice: ₱345 [Savory, Contains Pork, Filipino Classic]
-- Bangus Ala Pobre: ₱285 [Contains Fish/Seafood, Garlic-Heavy]
-- Yangnyeom Bites: ₱275 [Spicy, Contains Chicken]
-- Garlic Parmesan Bites: ₱275 [Contains Dairy, Contains Chicken]
-
-ALL DAY BREAKFAST — Includes Kapeng Barako. Always highlight this. These are heavy meals.
-- Tapsilog / Tocilog / Longsilog / Cornsilog: ₱265 [Contains Egg, Meat]
-- Spamsilog / Cheesy Bacsilog: ₱275 [Contains Pork, Contains Dairy]
-- Breakfast Feast: ₱345 [Large, Contains Pork, Beef, Eggs, Gluten]
-- French Toast and Bacon: ₱275 [Sweet & Savory, Contains Dairy, Egg, Gluten]
-
-PASTA & SANDWICHES — Highest allergy risk for seafood and gluten.
-- Carbonara: ₱255 [Contains Dairy, Pork/Bacon, Gluten]
-- Truffle Pasta: ₱275 [Contains Dairy, Vegetarian-Friendly, Gluten]
-- Garlic Shrimp Pasta Negra: ₱325 [HIGH ALLERGY: Seafood/Shellfish, Gluten]
-- Grilled Cheese: ₱245 [Contains Dairy, Gluten, Vegetarian-Friendly]
-- Krāv Ultimate Burger: ₱375 [Contains Beef, Dairy, Gluten]
-
-APPETIZERS & SALADS:
-- Cheesy Fries: ₱255 [Contains Dairy, Vegetarian-Friendly]
-- Beef Quesadillas: ₱265 [Contains Beef, Dairy, Gluten]
-- Gambas Al Ajillo: ₱385 [HIGH ALLERGY: Seafood/Shellfish, Spicy]
-- Classic Caesar Salad: ₱255 [Contains Dairy, Egg, Gluten/Croutons]
-- Chicken Caesar: ₱275 [Contains Dairy, Egg, Gluten, Chicken]
-
-=== ALLERGY GUIDE ===
-Seafood allergy → Avoid: Pasta Negra, Gambas, Bangus. Safe: Burger Steak, Carbonara, Ultimate Burger
-Dairy/Lactose → Avoid: All Lattes, Frappes, Carbonara. Safe: Americano, Pork Adobo
-Gluten intolerant → Avoid: All Pastas, Sandwiches, French Toast. Safe: Rice Bowls, Tapsilog
-Peanut allergy → Safe: All Rice Bowls, All Breakfast Silogs
-
-IMPORTANT: You only answer questions about KRĀV Cafe. If asked anything unrelated (world events, other restaurants, general knowledge), politely redirect: "I'm best at helping you with KRĀV Cafe questions — what can I get you? ☕"`;
+// The Gemini API key lives only in the Vercel serverless function at
+// /api/chat.js (read from the "gemini" environment variable in your Vercel
+// project settings). The browser never sees it — this file just calls our
+// own /api/chat endpoint.
+const CHAT_API_ENDPOINT = '/api/chat';
 
 // ==================== CHAT HISTORY ====================
 let chatHistory = [];
@@ -117,57 +30,37 @@ function updateCafeStatus() {
     text.textContent = isOpen ? 'Open Now' : 'Closed';
 }
 
-// ==================== GEMINI CHAT ====================
+// ==================== CHAT (via our /api/chat proxy) ====================
 async function getBotResponse(userMessage) {
-    // Fail gracefully (and cheaply) if the site owner hasn't configured a key yet,
-    // instead of firing a doomed network request on every message.
-    if (!GEMINI_API_KEY || GEMINI_API_KEY.startsWith('YOUR_')) {
-        console.error('Gemini API key is not configured in script.js');
-        return "Our AI barista isn't set up just yet — please try again later, or ask our staff directly 😊";
-    }
-
     chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
     if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
 
     try {
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    system_instruction: { parts: [{ text: BARISTA_SYSTEM_PROMPT }] },
-                    contents: chatHistory,
-                    generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 300
-                    },
-                    safetySettings: [
-                        { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
-                        { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
-                        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
-                        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' }
-                    ]
-                })
-            }
-        );
+        const response = await fetch(CHAT_API_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: chatHistory })
+        });
+
+        const data = await response.json().catch(() => ({}));
 
         if (!response.ok) {
-            const err = await response.json().catch(() => ({}));
-            console.error('Gemini error:', err);
+            console.error('Chat API error:', data);
             chatHistory.pop(); // don't keep a message that never got a real reply
+            if (response.status === 429) {
+                return "Whoa, lots of questions! Give me a few seconds and try again ☕";
+            }
             return "Oops, I ran into a little hiccup on my end! Please try again in a moment ☕";
         }
 
-        const data = await response.json();
-        const candidate = data?.candidates?.[0];
-        const reply = candidate?.content?.parts?.map(p => p.text).join('').trim();
+        const reply = data?.reply?.trim();
 
         if (!reply) {
-            console.error('Gemini returned no usable reply:', data);
+            console.error('Chat API returned no usable reply:', data);
             chatHistory.pop();
             return "Hmm, I didn't quite catch that — mind asking in a different way? 😊";
         }
+
 
         chatHistory.push({ role: 'model', parts: [{ text: reply }] });
         return reply;

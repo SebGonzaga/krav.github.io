@@ -109,23 +109,6 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
 }
 
-/* --- Gallery --- */
-.gallery-item:hover .gallery-overlay {
-    opacity: 1;
-}
-
-.gallery-img {
-    transition: transform 0.8s ease;
-}
-
-.gallery-item:hover .gallery-img {
-    transform: scale(1.15);
-}
-
-.gallery-overlay {
-    transition: opacity 0.5s ease;
-}
-
 /* --- Gallery Tabs --- */
 .gallery-tab {
     color: #888;
@@ -157,6 +140,15 @@ h1, h2, h3, h4, h5, h6 {
 @keyframes galleryPop {
     from { opacity: 0; transform: scale(0.8) translateY(16px); }
     to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* --- Gallery Lightbox --- */
+#lightbox.hidden {
+    display: none;
+}
+
+#lightbox.flex {
+    display: flex;
 }
 
 /* Hover: image zooms, overlay slides up */
